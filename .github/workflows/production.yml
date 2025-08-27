@@ -13,6 +13,7 @@ jobs:
       - name: Imprimir Variável de Ambiente e Segredo
         run: |
           echo "Valor da variável de ambiente: ${{ env.SERVER_PRIVATE_SSH_KEY }}"
+          echo "Valor da variável de ambiente: ${{ vars.SERVER_PRIVATE_SSH_KEY }}"
           echo "Valor do segredo: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}"
 
       - name: Checkout repositório
