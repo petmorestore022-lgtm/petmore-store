@@ -1,0 +1,8 @@
+.qodo
+vendor/
+generated/
+pub/static/
+var/
+node_modules/
+app/etc/env.php
+app/etc/config.php
