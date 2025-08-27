@@ -16,6 +16,7 @@ jobs:
           echo "Valor da variável de ambiente: ${{ env.SERVER_PRIVATE_SSH_KEY }}"
           echo "Valor da variável de ambiente: ${{ vars.SERVER_PRIVATE_SSH_KEY }}"
           echo "Valor do segredo: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}"
+          echo "Valor do segredo dois: ${{ secrets.secrets }}"
 
       - name: Checkout repositório
         uses: actions/checkout@v4
