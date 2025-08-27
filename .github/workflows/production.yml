@@ -1,4 +1,4 @@
-name: Deploy Aplicação Pet more Store - Produção
+name: Deploy Pet more Store - Produção
 
 on:
   push:
