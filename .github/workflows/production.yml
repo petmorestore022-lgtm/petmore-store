@@ -1,0 +1,67 @@
+name: Deploy Magento 2.4
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar acesso SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+
+      - name: Copiar arquivos para VM
+        run: |
+          rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./ \
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:/var/www/magento
+
+      - name: Instalar dependências Composer
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd /var/www/magento
+            composer install --no-dev --optimize-autoloader
+          EOF
+
+      - name: Executar setup do Magento
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd /var/www/magento
+            bin/magento setup:upgrade
+            bin/magento setup:di:compile
+            bin/magento setup:static-content:deploy -f
+            bin/magento cache:flush
+          EOF
+
+      - name: Corrigir permissões
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd /var/www/magento
+            sudo chown -R www-data:www-data .
+            sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
+            sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
+          EOF
+      - name: Criar env.php com envsubst
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            export REMOTE_STORAGE_DRIVER=${{ secrets.REMOTE_STORAGE_DRIVER }}
+            export BACKEND_FRONTNAME=${{ secrets.BACKEND_FRONTNAME }}
+            export CACHE_GRAPHQL_ID_SALT=${{ secrets.CACHE_GRAPHQL_ID_SALT }}
+            export CACHE_FRONTEND_DEFAULT_ID_PREFIX=${{ secrets.CACHE_FRONTEND_DEFAULT_ID_PREFIX }}
+            export CACHE_PAGE_CACHE_ID_PREFIX=${{ secrets.CACHE_PAGE_CACHE_ID_PREFIX }}
+            export CONNECTION_DEFAULT_HOST=${{ secrets.CONNECTION_DEFAULT_HOST }}
+            export CONNECTION_DEFAULT_PORT=${{ secrets.CONNECTION_DEFAULT_PORT }}
+            export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
+            export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
+            export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
+            envsubst < /var/www/magento/app/etc/env.php.template > /var/www/magento/app/etc/env.php
+          EOF
