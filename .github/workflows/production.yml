@@ -57,24 +57,6 @@ jobs:
             ./ \
             ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}
 
-      - name: Executar setup do Magento
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}
-            bin/magento setup:upgrade
-            bin/magento setup:di:compile
-            bin/magento setup:static-content:deploy -f
-            bin/magento cache:flush
-          EOF
-
-      - name: Corrigir permissões
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}
-            sudo chown -R www-data:www-data .
-            sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
-            sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
-          EOF
       - name: Criar env.php com envsubst
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
@@ -89,4 +71,24 @@ jobs:
             export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
             export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
             envsubst < /var/www/html/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php
+          EOF
+
+      - name: Executar setup do Magento
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}
+            bin/magento module:enable --all
+            bin/magento setup:upgrade
+            bin/magento setup:di:compile
+            bin/magento setup:static-content:deploy -f
+            bin/magento cache:flush
+          EOF
+
+      - name: Corrigir permissões
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}
+            sudo chown -R www-data:www-data .
+            sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
+            sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
           EOF
