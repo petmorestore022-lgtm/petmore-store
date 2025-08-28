@@ -70,7 +70,7 @@ jobs:
             export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
             export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
             export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
-            envsubst < /var/www/html/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php
+            envsubst < ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php
           EOF
 
       - name: Executar setup do Magento
