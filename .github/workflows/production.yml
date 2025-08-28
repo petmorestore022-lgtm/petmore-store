@@ -11,15 +11,25 @@ jobs:
     environment: production
 
     steps:
-      - name: Imprimir Variável de Ambiente e Segredo
-        run: |
-          echo "Valor da variável de ambiente: ${{ env.SERVER_PRIVATE_SSH_KEY }}"
-          echo "Valor da variável de ambiente outra vars: ${{ vars.APENAS_TESTE }}"
-          echo "Valor da variável de ambiente outra env: ${{ env.APENAS_TESTE }}"
-          echo "Valor do segredo: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}"
 
       - name: Checkout repositório
-        uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Check if composer.json exists
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'composer.json'
+
+      - name: Run composer install if composer.json exists
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
       - name: Configurar acesso SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -31,19 +41,12 @@ jobs:
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
-            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:/home/runner/work/petmore-store/petmore-store
-
-      - name: Instalar dependências Composer
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd /home/runner/work/petmore-store/petmore-store
-            composer install --no-dev --optimize-autoloader
-          EOF
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:/var/www/html
 
       - name: Executar setup do Magento
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd /home/runner/work/petmore-store/petmore-store
+            cd /var/www/html
             bin/magento setup:upgrade
             bin/magento setup:di:compile
             bin/magento setup:static-content:deploy -f
@@ -53,7 +56,7 @@ jobs:
       - name: Corrigir permissões
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd /home/runner/work/petmore-store/petmore-store
+            cd /var/www/html
             sudo chown -R www-data:www-data .
             sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
             sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
@@ -71,5 +74,5 @@ jobs:
             export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
             export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
             export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
-            envsubst < /home/runner/work/petmore-store/petmore-store/app/etc/env.php.template > /home/runner/work/petmore-store/petmore-store/app/etc/env.php
+            envsubst < /var/www/html/app/etc/env.php.template > /var/www/html/app/etc/env.php
           EOF
