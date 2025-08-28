@@ -39,6 +39,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
+      - name: Criando /var/www/html
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            mkdir -p /var/www/html
+          EOF
+
       - name: Copiar arquivos para VM
         run: |
           rsync -avz --delete \
