@@ -30,6 +30,10 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
+      - name: Configurar autenticação Magento no Composer
+        run: |
+          composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+
       - name: Configurar acesso SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
