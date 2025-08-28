@@ -39,11 +39,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
-      - name: Criar /var/www e dar permissão
+      - name: Criar /var/www/html/petmore-store e dar permissão
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-          sudo mkdir -p /var/www
-          sudo chown -R $USER:$USER /var/www
+          sudo mkdir -p /var/www/html/petmore-store
+          sudo chown -R $USER:$USER /var/www/html/petmore-store
           ls -ld /var/www
           EOF
       - name: Copiar arquivos para VM
@@ -51,12 +51,12 @@ jobs:
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
-            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:/var/www/html
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:/var/www/html/petmore-store
 
       - name: Executar setup do Magento
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd /var/www/html
+            cd /var/www/html/petmore-store
             bin/magento setup:upgrade
             bin/magento setup:di:compile
             bin/magento setup:static-content:deploy -f
@@ -66,7 +66,7 @@ jobs:
       - name: Corrigir permissões
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd /var/www/html
+            cd /var/www/html/petmore-store
             sudo chown -R www-data:www-data .
             sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
             sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
@@ -84,5 +84,5 @@ jobs:
             export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
             export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
             export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
-            envsubst < /var/www/html/app/etc/env.php.template > /var/www/html/app/etc/env.php
+            envsubst < /var/www/html/app/etc/env.php.template > /var/www/html/petmore-store/app/etc/env.php
           EOF
