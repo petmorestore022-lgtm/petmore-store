@@ -1,4 +1,4 @@
-name: Deploy Petmore Store - Produção
+name: Petmore Store - Produção
 
 on:
   push:
