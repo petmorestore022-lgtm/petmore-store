@@ -39,11 +39,11 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
-      - name: Criando /var/www/html
+      - name: Criar /var/www e dar permissão
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            mkdir -p /var/www/html
-          EOF
+          sudo mkdir -p /var/www
+          sudo chown -R $USER:$USER /var/www
+          ls -ld /var/www   # só para conferir permissões
 
       - name: Copiar arquivos para VM
         run: |
