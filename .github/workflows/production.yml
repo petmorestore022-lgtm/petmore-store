@@ -83,7 +83,7 @@ jobs:
             in/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade
             bin/magento setup:di:compile
-            bin/magento setup:static-content:deploy -f pt_BR en_US -f
+            # bin/magento setup:static-content:deploy -f pt_BR en_US -f
             # bin/magento deploy:mode:set developer
           EOF
 
