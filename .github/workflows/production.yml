@@ -84,9 +84,8 @@ jobs:
             bin/magento setup:upgrade
             bin/magento setup:di:compile
             bin/magento setup:static-content:deploy -f
-            # bin/magento setup:static-content:deploy -f pt_BR en_US -f
             # bin/magento deploy:mode:set developer
-            bin/magento deploy:mode:show
+            # bin/magento deploy:mode:show
           EOF
 
       - name: Corrigir permissões
