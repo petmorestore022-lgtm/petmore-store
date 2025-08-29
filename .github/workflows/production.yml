@@ -78,13 +78,13 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}
 
-            bin/magento module:enable --all --clear-static-conten
+            bin/magento cache:clean
+            bin/magento cache:flush
+            in/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade
             bin/magento setup:di:compile
-            bin/magento setup:static-content:deploy -f pt_BR en_US
-            bin/magento deploy:mode:set developer
-
-            bin/magento cache:flush
+            bin/magento setup:static-content:deploy -f pt_BR en_US -f
+            # bin/magento deploy:mode:set developer
           EOF
 
       - name: Corrigir permissões
