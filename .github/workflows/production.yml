@@ -77,10 +77,13 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}
+
+            chmod 777 -R var/page_cache
+
             bin/magento module:enable --all
             bin/magento setup:upgrade
             bin/magento setup:di:compile
-            bin/magento setup:static-content:deploy -f
+            bin/magento setup:static-content:deploy -f pt_BR en_US
             bin/magento cache:flush
           EOF
 
