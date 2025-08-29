@@ -78,12 +78,12 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}
 
-            chmod 777 -R var/page_cache
-
             bin/magento module:enable --all
             bin/magento setup:upgrade
             bin/magento setup:di:compile
             bin/magento setup:static-content:deploy -f pt_BR en_US
+            bin/magento deploy:mode:set developer
+
             bin/magento cache:flush
           EOF
 
@@ -92,6 +92,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}
             sudo chown -R www-data:www-data .
-            sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
-            sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
+            # sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
+            # sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
           EOF
