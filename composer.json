@@ -19,6 +19,7 @@
     "version": "2.4.7",
     "require": {
         "community-engineering/language-pt_br": "*",
+        "frenet/frenet-magento2": "^2.4",
         "getnetadquirencia/payment-magento": "^101.4",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
