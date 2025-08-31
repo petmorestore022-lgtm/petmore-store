@@ -81,7 +81,7 @@ jobs:
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php
           EOF
 
-      - name: Executar setup do Magento
+      - name: Executar setup da Aplicação
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}
