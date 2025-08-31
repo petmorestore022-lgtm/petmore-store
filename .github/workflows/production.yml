@@ -70,6 +70,14 @@ jobs:
             export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
             export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
             export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
+
+            export DOWNLOADABLE_DOMAINS=${{ vars.DOWNLOADABLE_DOMAINS }}
+            export CATALOG_SEARCH_ENGINE=${{ secrets.CATALOG_SEARCH_ENGINE }}
+            export CATALOG_SEARCH_SERVER_HOSTNAME=${{ secrets.CATALOG_SEARCH_SERVER_HOSTNAME }}
+            export CATALOG_SEARCH_SERVER_PORT=${{ secrets.CATALOG_SEARCH_SERVER_PORT }}
+            export CATALOG_SEARCH_INDEX_PREFIX=${{ secrets.CATALOG_SEARCH_INDEX_PREFIX }}
+            export CATALOG_SEARCH_SERVER_TIMEOUT=${{ secrets.CATALOG_SEARCH_SERVER_TIMEOUT }}
+
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php
           EOF
 
