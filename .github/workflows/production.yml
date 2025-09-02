@@ -105,8 +105,8 @@ jobs:
       - name: Movendo diretorio para o path final
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
-            mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
-            mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
           EOF
 
