@@ -46,8 +46,8 @@ jobs:
       - name: Criar path da aplicação e dar permissão
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-          sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}
-          sudo chown -R $USER:$USER ${{ vars.APP_COMPLETE_PATH }}
+          sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
+          sudo chown -R $USER:$USER ${{ vars.APP_COMPLETE_PATH }}/building
           EOF
 
       - name: Copiar arquivos para VM
@@ -55,7 +55,7 @@ jobs:
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
-            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}/building
 
       - name: Criar env.php com envsubst
         run: |
@@ -78,13 +78,13 @@ jobs:
             export CATALOG_SEARCH_INDEX_PREFIX=${{ secrets.CATALOG_SEARCH_INDEX_PREFIX }}
             export CATALOG_SEARCH_SERVER_TIMEOUT=${{ secrets.CATALOG_SEARCH_SERVER_TIMEOUT }}
 
-            envsubst < ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/app/etc/env.php
+            envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
           EOF
 
       - name: Executar setup da Aplicação
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             bin/magento cache:clean
             bin/magento cache:flush
@@ -95,11 +95,18 @@ jobs:
             #bin/magento deploy:mode:set developer
           EOF
 
-      - name: Corrigir permissões
+      - name: Corrigir permissões do path final
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
             sudo chown -R www-data:www-data .
-            # sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
-            # sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
           EOF
+
+      - name: Movendo diretorio para o path final
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
+            mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
+            mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+          EOF
+
