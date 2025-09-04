@@ -4,5 +4,8 @@
     <parent>Magento/blank</parent>
     <media>
         <preview_image>media/preview.png</preview_image>
+        <exclude>
+            <file>css/email-fonts.less</file>
+        </exclude>
     </media>
 </theme>
