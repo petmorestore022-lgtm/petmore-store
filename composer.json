@@ -83,18 +83,6 @@
             "url": "https://repo.magento.com/"
         }
     ],
-    "scripts": {
-        "post-install-cmd": [
-            "@copy-custom-magento"
-        ],
-        "post-update-cmd": [
-            "@copy-custom-magento"
-        ],
-        "copy-custom-magento": [
-            "echo '➡️ Copiando custom-vendor/magento/theme-frontend-blank para vendor/magento/theme-frontend-blank...'",
-            "cp -r custom-vendor/magento/theme-frontend-blank vendor/magento/theme-frontend-blank"
-        ]
-    },
     "extra": {
         "magento-force": "override"
     }
