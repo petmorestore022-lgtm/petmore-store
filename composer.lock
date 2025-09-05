@@ -18367,7 +18367,7 @@
                 "magento/page-builder": "1.7.4",
                 "magento/security-package": "1.1.6",
                 "magento/theme-adminhtml-backend": "100.4.7",
-                "magento/theme-frontend-blank": "100.4.7",
+                "magento/theme-frontend-blank": "100.4.6",
                 "magento/theme-frontend-luma": "100.4.7",
                 "magento/zend-cache": "^1.16",
                 "magento/zend-db": "^1.16",
@@ -18520,10 +18520,10 @@
         },
         {
             "name": "magento/theme-frontend-blank",
-            "version": "100.4.7",
+            "version": "100.4.6",
             "dist": {
                 "type": "zip",
-                "url": "https://repo.magento.com/archives/magento/theme-frontend-blank/magento-theme-frontend-blank-100.4.7.0.zip",
+                "url": "https://repo.magento.com/archives/magento/theme-frontend-blank/magento-theme-frontend-blank-100.4.6.0.zip",
                 "shasum": "1a66242f246e874977ccf6d085a8d2553bbd7c87"
             },
             "require": {
