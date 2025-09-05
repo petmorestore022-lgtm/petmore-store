@@ -18524,7 +18524,7 @@
             "dist": {
                 "type": "zip",
                 "url": "https://repo.magento.com/archives/magento/theme-frontend-blank/magento-theme-frontend-blank-100.4.6.0.zip",
-                "shasum": "1a66242f246e874977ccf6d085a8d2553bbd7c87"
+                "shasum": "61ac6b6855d1cb8deff4b7f2b98387376caa31e8"
             },
             "require": {
                 "magento/framework": "103.0.*",
