@@ -152,6 +152,7 @@ class FilterTest extends \PHPUnit\Framework\TestCase
         return $result;
     }
 
+
     /**
      * @param $directive
      * @param $translations
