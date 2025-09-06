@@ -32,7 +32,7 @@ jobs:
 
       - name: Run composer install if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
-        run: composer update
+        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
       - name: Configurar acesso SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -94,7 +94,7 @@ jobs:
             bin/magento setup:di:compile
             bin/magento setup:static-content:deploy -f pt_BR en_US --no-less
             bin/magento cache:flush
-            bin/magento cron:install
+            #bin/magento cron:install
             #bin/magento deploy:mode:set developer
           EOF
 
