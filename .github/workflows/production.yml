@@ -94,8 +94,8 @@ jobs:
             bin/magento setup:di:compile
             bin/magento setup:static-content:deploy -f pt_BR en_US --no-less
             bin/magento cache:flush
-            #bin/magento cron:install
-            #bin/magento deploy:mode:set developer
+            # bin/magento cron:install
+            # bin/magento deploy:mode:set developer
           EOF
 
       - name: Corrigir permissões do path building
