@@ -19091,44 +19091,6 @@
             "time": "2024-11-28T04:54:44+00:00"
         },
         {
-            "name": "melhorenvio/magento2",
-            "version": "dev-main",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/melhorenvio/magento2.git",
-                "reference": "2f28f4c19280a51ee1895e67b216be7089803b60"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/melhorenvio/magento2/zipball/2f28f4c19280a51ee1895e67b216be7089803b60",
-                "reference": "2f28f4c19280a51ee1895e67b216be7089803b60",
-                "shasum": ""
-            },
-            "require": {
-                "laminas/laminas-http": ">=2.13"
-            },
-            "default-branch": true,
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "MelhorEnvio\\Quote\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "proprietary"
-            ],
-            "description": "Módulo para gestão de frete do Melhor Envio",
-            "support": {
-                "issues": "https://github.com/melhorenvio/magento2/issues",
-                "source": "https://github.com/melhorenvio/magento2/tree/main"
-            },
-            "time": "2024-12-06T19:18:17+00:00"
-        },
-        {
             "name": "monolog/monolog",
             "version": "2.10.0",
             "source": {
