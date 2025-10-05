@@ -77,6 +77,8 @@ jobs:
             export CATALOG_SEARCH_SERVER_PORT=${{ secrets.CATALOG_SEARCH_SERVER_PORT }}
             export CATALOG_SEARCH_INDEX_PREFIX=${{ secrets.CATALOG_SEARCH_INDEX_PREFIX }}
             export CATALOG_SEARCH_SERVER_TIMEOUT=${{ secrets.CATALOG_SEARCH_SERVER_TIMEOUT }}
+            export WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE }}
+            export WEB_DEFAULT_BASE_MEDIA_URL_SECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_SECURE }}
             export CRYPT_KEY=${{ secrets.CRYPT_KEY }}
 
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
