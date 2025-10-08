@@ -3,34 +3,59 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
 
     <system>
-        <section id="aws_s3_storage" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="aws_s3_storage" translate="label" type="text" sortOrder="300"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
             <label>AWS S3 Storage</label>
             <tab>advanced</tab>
             <resource>Magento_AwsS3::config_aws_s3_storage</resource>
 
-            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="general" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Settings</label>
 
-                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable AWS S3</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="access_key_id" translate="label" type="text" sortOrder="20">
+                <field id="access_key_id" translate="label" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Access Key ID</label>
+                    <comment>Your AWS access key ID</comment>
                 </field>
 
-                <field id="secret_access_key" translate="label" type="obscure" sortOrder="30">
+                <field id="secret_access_key" translate="label" type="obscure" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Secret Access Key</label>
+                    <comment>Your AWS secret access key</comment>
                 </field>
 
-                <field id="bucket_name" translate="label" type="text" sortOrder="40">
+                <field id="bucket_name" translate="label" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Bucket Name</label>
+                    <comment>The name of your S3 bucket</comment>
                 </field>
 
-                <field id="region" translate="label" type="text" sortOrder="50">
+                <field id="region" translate="label" type="text" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Region</label>
+                    <comment>Example: sa-east-1 (São Paulo)</comment>
                 </field>
+
+                <field id="endpoint" translate="label" type="text" sortOrder="60"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Endpoint (optional)</label>
+                    <comment>Custom S3-compatible endpoint (e.g., MinIO, Wasabi)</comment>
+                </field>
+
+                <field id="use_path_style_endpoint" translate="label" type="select" sortOrder="70"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use Path Style Endpoint</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable if your provider requires path-style URLs</comment>
+                </field>
+
             </group>
         </section>
     </system>
