@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+
+    <system>
+        <section id="aws_s3_storage" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>AWS S3 Storage</label>
+            <tab>advanced</tab>
+            <resource>Magento_AwsS3::config_aws_s3_storage</resource>
+
+            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable AWS S3</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="access_key_id" translate="label" type="text" sortOrder="20">
+                    <label>Access Key ID</label>
+                </field>
+
+                <field id="secret_access_key" translate="label" type="obscure" sortOrder="30">
+                    <label>Secret Access Key</label>
+                </field>
+
+                <field id="bucket_name" translate="label" type="text" sortOrder="40">
+                    <label>Bucket Name</label>
+                </field>
+
+                <field id="region" translate="label" type="text" sortOrder="50">
+                    <label>Region</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
