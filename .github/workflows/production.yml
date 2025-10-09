@@ -30,6 +30,11 @@ jobs:
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
+      - name: Run composer install shinetech
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: composer require shinetech/module-aws-s3
+
+
       - name: Run composer install if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
@@ -91,6 +96,8 @@ jobs:
 
             bin/magento cache:clean
             bin/magento cache:flush
+
+            php bin/magento module:enable ST_AwsS3
 
             bin/magento module:enable Vendor_AwsS3ConfigPatch
             bin/magento module:enable Magento_AwsS3
