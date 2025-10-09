@@ -5,7 +5,7 @@
 }
 
 :80 {
-    root * /var/www/html/pub
+    root * /app/pub
     encode gzip zstd
 
     # Arquivos estáticos
@@ -23,9 +23,9 @@
     }
 
     php_server 127.0.0.1:9000 {
-        root /var/www/html/pub
+        root /app/pub
         resolve_root_symlink
-        env MAGENTO_ROOT /var/www/html
+        env MAGENTO_ROOT /app/html
         env PHP_MEMORY_LIMIT 2G
     }
 

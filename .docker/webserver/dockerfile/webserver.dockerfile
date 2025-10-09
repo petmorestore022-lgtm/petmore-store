@@ -49,4 +49,4 @@ RUN chmod +x /app/startup.sh
 # USER www-data
 
 
-CMD [ "frankenphp", "run", "--host", "0.0.0.0", "--port", "8084" ]
+CMD [ "frankenphp", "run" ]
