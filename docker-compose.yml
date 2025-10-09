@@ -1,0 +1,19 @@
+services:
+  frankenphp:
+    build:
+      context: .
+      dockerfile: ./.docker/webserver/dockerfile/webserver.dockerfile
+    container_name: petmore-magento-frankenphp
+    working_dir: /var/www/html
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./src:/var/www/html
+      - ./.docker/Caddyfile:/etc/caddy/Caddyfile:ro
+    environment:
+      SERVER_NAME: localhost
+      APP_ENV: prod
+      FRANKENPHP_CONFIG: |
+        worker ./pub/index.php
+        static-dir /var/www/html/pub
+    restart: unless-stopped
