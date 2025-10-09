@@ -27,8 +27,7 @@
         "magento/module-media-storage": "^100.4",
         "magento/product-community-edition": "2.4.7",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
-        "pagarme/pagarme-magento2-module": "^2.6.2",
-        "thaiphan/magento2-s3": "^1.3"
+        "pagarme/pagarme-magento2-module": "^2.6.2"
     },
     "autoload": {
         "exclude-from-classmap": [
