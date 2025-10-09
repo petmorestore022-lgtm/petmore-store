@@ -113,8 +113,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            # bin/magento cache:clean
-            # bin/magento cache:flush
+            bin/magento cache:clean
+            bin/magento cache:flush
 
             bin/magento module:enable Magento_AwsS3
             bin/magento module:disable Thai_S3
@@ -122,7 +122,7 @@ jobs:
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
             bin/magento setup:di:compile
-            php -d memory_limit=9G bin/magento setup:static-content:deploy -f
+            php -d memory_limit=8G bin/magento setup:static-content:deploy -f
 
             # bin/magento cron:install
             # bin/magento deploy:mode:set developer
