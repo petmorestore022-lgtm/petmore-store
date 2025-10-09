@@ -9,8 +9,9 @@ services:
       - "8084:8084"
     volumes:
       - ./src:/var/www/html
-      - ./.docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      # - ./.docker/Caddyfile:/etc/caddy/Caddyfile:ro
     environment:
+      MAGE_MODE: developer
       SERVER_NAME: localhost
       APP_ENV: prod
       FRANKENPHP_CONFIG: |
