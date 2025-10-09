@@ -85,6 +85,18 @@ jobs:
             export WEB_DEFAULT_BASE_MEDIA_URL_SECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_SECURE }}
             export CRYPT_KEY=${{ secrets.CRYPT_KEY }}
 
+            export REMOTE_STORAGE_DRIVER = ${{ secrets.REMOTE_STORAGE_DRIVER }}
+            export REMOTE_STORAGE_CONFIG_BUCKET = ${{ secrets.REMOTE_STORAGE_CONFIG_BUCKET }}
+            export REMOTE_STORAGE_CONFIG_REGION = ${{ secrets.REMOTE_STORAGE_CONFIG_REGION }}
+            export REMOTE_STORAGE_CONFIG_KEY = ${{ secrets.REMOTE_STORAGE_CONFIG_KEY }}
+            export REMOTE_STORAGE_CONFIG_SECRET = ${{ secrets.REMOTE_STORAGE_CONFIG_SECRET }}
+            export REMOTE_STORAGE_CONFIG_ENDPOINT = ${{ secrets.REMOTE_STORAGE_CONFIG_ENDPOINT }}
+            export REMOTE_STORAGE_CONFIG_USE_PATH_STYLE = ${{ secrets.REMOTE_STORAGE_CONFIG_USE_PATH_STYLE }}
+            export REMOTE_STORAGE_CONFIG_USE_URL = ${{ secrets.REMOTE_STORAGE_CONFIG_USE_URL }}
+            export REMOTE_STORAGE_CONFIG_THROW = ${{ secrets.REMOTE_STORAGE_CONFIG_THROW }}
+            export REMOTE_STORAGE_CONFIG_HTTP_HTTP_CONNECT_TIMEOUT = ${{ secrets.REMOTE_STORAGE_CONFIG_HTTP_HTTP_CONNECT_TIMEOUT }}
+            export REMOTE_STORAGE_CONFIG_HTTP_TIMEOUT = ${{ secrets.REMOTE_STORAGE_CONFIG_HTTP_TIMEOUT }}
+
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
           EOF
 
@@ -97,9 +109,6 @@ jobs:
             bin/magento cache:flush
 
             bin/magento module:enable Thai_S3
-
-            bin/magento module:enable Vendor_AwsS3ConfigPatch
-            bin/magento module:enable Magento_AwsS3
 
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
