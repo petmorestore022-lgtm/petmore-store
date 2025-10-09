@@ -105,8 +105,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            bin/magento cache:clean
-            bin/magento cache:flush
+            # bin/magento cache:clean
+            # bin/magento cache:flush
 
             bin/magento module:enable Thai_S3
 
