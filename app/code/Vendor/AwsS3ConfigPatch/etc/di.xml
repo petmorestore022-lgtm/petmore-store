@@ -1,0 +1,12 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Framework\Filesystem\DriverPool">
+        <arguments>
+            <argument name="drivers" xsi:type="array">
+                <item name="aws-s3" xsi:type="object">Magento\AwsS3\Driver\S3</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
