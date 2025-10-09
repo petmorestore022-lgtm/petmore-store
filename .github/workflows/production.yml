@@ -105,6 +105,7 @@ jobs:
             bin/magento cache:flush
 
             bin/magento module:disable Thai_S3
+
             bin/magento module:enable Magento_AwsS3
 
             bin/magento module:enable --all --clear-static-content
