@@ -96,7 +96,7 @@ jobs:
             bin/magento cache:clean
             bin/magento cache:flush
 
-            bin/magento module:enable MagePal_AmazonS3 MagePal_AmazonS3Admin
+            bin/magento module:enable Thai_S3
 
             bin/magento module:enable Vendor_AwsS3ConfigPatch
             bin/magento module:enable Magento_AwsS3
