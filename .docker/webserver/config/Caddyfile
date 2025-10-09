@@ -1,0 +1,37 @@
+{
+    frankenphp
+    auto_https off
+    admin off
+}
+
+:80 {
+    root * /var/www/html/pub
+    encode gzip zstd
+
+    # Arquivos estáticos
+    handle /static/* {
+        try_files {path} {path}/ /static.php?{query}
+    }
+
+    handle /media/* {
+        try_files {path} {path}/ /get.php?{query}
+    }
+
+    # Regras principais do Magento
+    handle {
+        try_files {path} {path}/ /index.php?{query}
+    }
+
+    php_server 127.0.0.1:9000 {
+        root /var/www/html/pub
+        resolve_root_symlink
+        env MAGENTO_ROOT /var/www/html
+        env PHP_MEMORY_LIMIT 2G
+    }
+
+    file_server
+    log {
+        output stdout
+        format single_field common_log
+    }
+}
