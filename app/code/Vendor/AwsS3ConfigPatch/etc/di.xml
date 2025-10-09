@@ -4,7 +4,7 @@
     <type name="Magento\Framework\Filesystem\DriverPool">
         <arguments>
             <argument name="drivers" xsi:type="array">
-                <item name="aws-s3" xsi:type="object">Magento\AwsS3\Driver\S3</item>
+                <item name="aws-s3" xsi:type="object">Magento\Framework\Filesystem\Driver\AwsS3</item>
             </argument>
         </arguments>
     </type>
