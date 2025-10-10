@@ -113,6 +113,8 @@ jobs:
             # bin/magento cache:clean
             # bin/magento cache:flush
 
+            bin/magento module:enable Magento_RemoteStorage
+
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
             bin/magento setup:di:compile
