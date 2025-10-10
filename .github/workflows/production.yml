@@ -104,7 +104,7 @@ jobs:
             bin/magento cache:clean
             bin/magento cache:flush
 
-            bin/magento module:disable Thai_S3
+            bin/magento module:uninstall Thai_S3
 
             bin/magento module:enable Magento_AwsS3
 
