@@ -30,13 +30,17 @@ jobs:
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
-      - name: Run composer install if composer.json exists
+      - name: Run composer install magento/module-remote-storage
         if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+        run: composer require magento/module-remote-storage
 
-      # - name: Run composer update if composer.json exists
+      # - name: Run composer install if composer.json exists
       #   if: steps.check_files.outputs.files_exists == 'true'
-      #   run: composer update
+      #   run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+
+      - name: Run composer update if composer.json exists
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: composer update
 
       - name: Configurar acesso SSH
         uses: webfactory/ssh-agent@v0.9.0
