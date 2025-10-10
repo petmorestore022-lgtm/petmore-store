@@ -104,10 +104,9 @@ jobs:
             # bin/magento cache:clean
             # bin/magento cache:flush
 
-            bin/magento module:uninstall Getnet_PaymentMagento
-            bin/magento module:uninstall MelhorEnvio_Quote
-            bin/magento module:uninstall PayPal_Braintree
-            bin/magento module:uninstall Vendor_AwsS3ConfigPatch
+            bin/magento module:uninstall --force Getnet_PaymentMagento
+            bin/magento module:uninstall --force MelhorEnvio_Quote
+            bin/magento module:uninstall --force Vendor_AwsS3ConfigPatch
 
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
