@@ -101,12 +101,13 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            bin/magento cache:clean
-            bin/magento cache:flush
+            # bin/magento cache:clean
+            # bin/magento cache:flush
 
-            bin/magento module:uninstall Thai_S3
-
-            bin/magento module:enable Magento_AwsS3
+            bin/magento module:uninstall Getnet_PaymentMagento
+            bin/magento module:uninstall MelhorEnvio_Quote
+            bin/magento module:uninstall PayPal_Braintree
+            bin/magento module:uninstall Vendor_AwsS3ConfigPatch
 
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
@@ -114,7 +115,7 @@ jobs:
             php -d memory_limit=8G bin/magento setup:static-content:deploy -f
 
             # bin/magento cron:install
-            bin/magento deploy:mode:set developer
+            # bin/magento deploy:mode:set developer
           EOF
 
       - name: Corrigir permissões do path building
