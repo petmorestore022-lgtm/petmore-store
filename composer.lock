@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "264d4ca1003a163d1ddf3ba1dc75579c",
+    "content-hash": "8b10434ce1edc06dd0b70fc0cdee4a47",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2041,50 +2041,6 @@
                 "source": "https://github.com/FrenetGatewaydeFretes/frenet-php/tree/1.3.1"
             },
             "time": "2022-11-03T17:39:38+00:00"
-        },
-        {
-            "name": "getnetadquirencia/payment-magento",
-            "version": "101.4.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Getnet-Brasil/payment-magento.git",
-                "reference": "8e43fff16797178f8e3a3317dfa6124baa6db743"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Getnet-Brasil/payment-magento/zipball/8e43fff16797178f8e3a3317dfa6124baa6db743",
-                "reference": "8e43fff16797178f8e3a3317dfa6124baa6db743",
-                "shasum": ""
-            },
-            "require": {
-                "bacon/bacon-qr-code": "*",
-                "ext-json": "*",
-                "magento/framework": ">=103.0",
-                "php": ">=7.3"
-            },
-            "require-dev": {
-                "magento/magento-coding-standard": "*"
-            },
-            "type": "magento2-module",
-            "autoload": {
-                "files": [
-                    "registration.php"
-                ],
-                "psr-4": {
-                    "Getnet\\PaymentMagento\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OSL-3.0",
-                "AFL-3.0"
-            ],
-            "description": "Getnet - Payment for Magento 2",
-            "support": {
-                "issues": "https://github.com/Getnet-Brasil/payment-magento/issues",
-                "source": "https://github.com/Getnet-Brasil/payment-magento/tree/102.4.9"
-            },
-            "time": "2025-09-10T17:36:41+00:00"
         },
         {
             "name": "google/recaptcha",
