@@ -18,3 +18,7 @@ services:
         worker ./pub/index.php
         static-dir /var/www/html/pub
     restart: unless-stopped
+
+
+
+
