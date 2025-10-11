@@ -1,6 +1,6 @@
 <?php
 
-require 'app/bootstrap.php';
+require '../app/bootstrap.php';
 
 $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, []);
 
