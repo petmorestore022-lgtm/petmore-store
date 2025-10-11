@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     environment: production
 
@@ -42,6 +42,11 @@ jobs:
       #   if: steps.check_files.outputs.files_exists == 'true'
       #   run: composer update
 
+    deploy:
+      runs-on: ubuntu-latest
+      environment: production
+
+      steps:
       - name: Configurar acesso SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -109,7 +114,7 @@ jobs:
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
           EOF
 
-      - name: Executar setup da Aplicação Petmore Store
+      - name: Executar setup da Aplicação Petmore Store enable and upgrade
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
@@ -119,7 +124,14 @@ jobs:
 
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
-            bin/magento setup:di:compile
+
+          EOF
+
+      - name: Executar setup da Aplicação Petmore Store setup static
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
             php -d memory_limit=9G bin/magento setup:static-content:deploy -f
 
             # bin/magento cron:install
