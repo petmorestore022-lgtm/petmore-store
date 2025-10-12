@@ -118,8 +118,7 @@ jobs:
             # php bin/magento module:enable Magento_AwsS
 
             bin/magento module:enable --all --clear-static-content
-            bin/magento setup:upgrade --keep-generated
-            bin/magento setup:di:compile
+            php -d memory_limit=9G bin/magento setup:upgrade --keep-generated
 
           EOF
 
@@ -128,7 +127,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            bin/magento setup:di:compile
+            php -d memory_limit=9G bin/magento setup:di:compile
 
           EOF
 
