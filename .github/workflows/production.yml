@@ -117,9 +117,6 @@ jobs:
             # bin/magento cache:flush
 
             bin/magento module:enable --all --clear-static-content
-
-            # php bin/magento module:disable Magento_AwsS3 --force --clear-static-content
-
             bin/magento setup:upgrade --keep-generated
 
           EOF
