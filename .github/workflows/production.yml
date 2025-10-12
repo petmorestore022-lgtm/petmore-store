@@ -116,7 +116,7 @@ jobs:
             # bin/magento cache:clean
             # bin/magento cache:flush
 
-            php bin/magento module:disable Magento_AwsS3 -f --clear-static-content
+            php bin/magento module:disable Magento_AwsS3 --force --clear-static-content
 
             bin/magento module:enable --all --clear-static-content
             bin/magento setup:upgrade --keep-generated
