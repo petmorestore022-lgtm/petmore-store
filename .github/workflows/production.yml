@@ -158,7 +158,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --area frontend
+            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --area frontend  --strategy compact
 
             # bin/magento cron:install
             # bin/magento deploy:mode:set developer
