@@ -23,6 +23,7 @@
         "league/flysystem-aws-s3-v3": "^2.5",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
+        "magento/module-aws-s3": "^100.4",
         "magento/module-media-storage": "^100.4",
         "magento/module-remote-storage": "^100.4",
         "magento/product-community-edition": "2.4.7",
