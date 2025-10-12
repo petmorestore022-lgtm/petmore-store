@@ -129,7 +129,7 @@ jobs:
             # php bin/magento module:enable Magento_AwsS
 
             bin/magento module:enable --all --clear-static-content
-            php -d memory_limit=9G bin/magento setup:upgrade --keep-generated
+            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
 
           EOF
 
@@ -138,27 +138,16 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            php -d memory_limit=9G bin/magento setup:di:compile
+            php -d memory_limit=2G bin/magento setup:di:compile
 
           EOF
 
-      - name: Executar setup da Aplicação Petmore Store setup static adminhtml
+      - name: Executar setup da Aplicação Petmore Store setup
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --area adminhtml
-
-            # bin/magento cron:install
-            # bin/magento deploy:mode:set developer
-          EOF
-
-      - name: Executar setup da Aplicação Petmore Store setup static frontend
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --area frontend  --strategy compact
+            php -d memory_limit=2G bin/magento setup:static-content:deploy
 
             # bin/magento cron:install
             bin/magento deploy:mode:set developer
