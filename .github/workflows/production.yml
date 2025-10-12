@@ -142,13 +142,23 @@ jobs:
 
           EOF
 
-      - name: Executar setup da Aplicação Petmore Store setup static
+      - name: Executar setup da Aplicação Petmore Store setup static adminhtml
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            # php -d memory_limit=9G bin/magento setup:static-content:deploy -f en_US pt_BR
-            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --strategy standard
+            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --area adminhtml
+
+            # bin/magento cron:install
+            # bin/magento deploy:mode:set developer
+          EOF
+
+      - name: Executar setup da Aplicação Petmore Store setup static frontend
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            php -d memory_limit=9G bin/magento setup:static-content:deploy -f pt_BR en_US --area frontend
 
             # bin/magento cron:install
             # bin/magento deploy:mode:set developer
