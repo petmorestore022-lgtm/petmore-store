@@ -15,7 +15,9 @@
             "magento/*": true,
             "php-http/discovery": true
         },
-        "preferred-install": "dist",
+        "preferred-install": {
+            "*": "dist"
+        },
         "sort-packages": true
     },
     "version": "2.4.8",
@@ -75,12 +77,18 @@
             "Magento\\Tools\\Sanity\\": "dev/build/publication/sanity/Magento/Tools/Sanity/"
         }
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
     "repositories": [
         {
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/pagarme/pagarme-magento2-module"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/pagarme/ecommerce-module-core"
         }
     ],
     "extra": {
