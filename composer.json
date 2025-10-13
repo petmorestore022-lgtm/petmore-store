@@ -18,7 +18,9 @@
         "preferred-install": {
             "*": "dist"
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "platform-check": false
+
     },
     "version": "2.4.8",
     "require": {
