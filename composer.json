@@ -24,12 +24,13 @@
     },
     "version": "2.4.8",
     "require": {
-        "magento/product-community-edition": "2.4.8",
-        "magento/composer-dependency-version-audit-plugin": "~0.1",
-        "magento/composer-root-update-plugin": "^2.0.4",
         "community-engineering/language-pt_br": "*",
+        "cweagans/composer-patches": "^1.7",
         "frenet/frenet-magento2": "^2.4",
         "league/flysystem-aws-s3-v3": "^3.0",
+        "magento/composer-dependency-version-audit-plugin": "~0.1",
+        "magento/composer-root-update-plugin": "^2.0.4",
+        "magento/product-community-edition": "2.4.8",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
         "pagarme/pagarme-magento2-module": "dev-master"
     },
@@ -86,7 +87,11 @@
         }
     ],
     "extra": {
-        "magento-force": "override"
+        "magento-force": "override",
+        "patches": {
+        "pagarme/ecommerce-module-core": {
+            "Allow Monolog 3": "patches/pagarme-monolog3.patch"
+        }
+    }
     }
 }
-
