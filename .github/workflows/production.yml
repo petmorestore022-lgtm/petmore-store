@@ -147,12 +147,20 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            # Deploy estático completo para todos os temas
-            php -d memory_limit=4G bin/magento setup:static-content:deploy -f --area frontend --area adminhtml --jobs=4
+            echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
+            # Deploy para adminhtml - vai compilar todos os temas admin automaticamente
+            php -d memory_limit=4G bin/magento setup:static-content:deploy --area adminhtml --force --jobs=4
 
-            # Verificar se arquivos foram gerados
-            echo "=== Verificando arquivos estáticos gerados ==="
-            ls -la pub/static/frontend/Magento/luma/en_US/mage/ 2>/dev/null || echo "Diretório mage ainda não existe"
+            echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
+            # Deploy para frontend - vai compilar todos os temas frontend automaticamente
+            php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force --jobs=4
+
+            echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
+            echo "Temas Admin compilados:"
+            ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
+
+            echo "Temas Frontend compilados:"
+            ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
           EOF
 
       - name: Configurar modo produção e finalizar
