@@ -142,7 +142,7 @@ jobs:
             php -d memory_limit=4G bin/magento setup:di:compile
           EOF
 
-      - name: Deploy completo de conteúdo estático
+      - name: Deploy completo de conteúdo estático - admin
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
@@ -151,13 +151,20 @@ jobs:
             # Deploy para adminhtml - vai compilar todos os temas admin automaticamente
             php -d memory_limit=4G bin/magento setup:static-content:deploy --area adminhtml --force --jobs=4
 
-            echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
-            # Deploy para frontend - vai compilar todos os temas frontend automaticamente
-            php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force --jobs=4
-
             echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
             echo "Temas Admin compilados:"
             ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
+
+          EOF
+
+      - name: Deploy completo de conteúdo estático - frontend
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
+            # Deploy para frontend - vai compilar todos os temas frontend automaticamente
+            php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force --jobs=4
 
             echo "Temas Frontend compilados:"
             ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
