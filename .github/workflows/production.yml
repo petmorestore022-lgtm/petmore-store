@@ -116,16 +116,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            rm -rf var/cache/*
-            rm -rf var/page_cache/*
-            rm -rf generated/code/*
-            rm -rf generated/metadata/*
-            rm -rf var/view_preprocessed/*
-
-            # Clear static files
-            rm -rf pub/static/frontend/*
-            rm -rf pub/static/adminhtml/*
-
             bin/magento cache:clean
             bin/magento cache:flush
 
