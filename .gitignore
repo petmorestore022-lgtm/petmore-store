@@ -1,0 +1,187 @@
+# Magento specific files and directories
+/app/etc/env.php
+/app/etc/config.php
+/var/
+/generated/
+/pub/static/
+/pub/media/
+/update/
+/var/cache/
+/var/composer_home/
+/var/generation/
+/var/log/
+/var/page_cache/
+/var/session/
+/var/tmp/
+/var/view_preprocessed/
+
+# Composer
+/vendor/
+/composer.lock
+
+# Node.js and build tools
+/node_modules/
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+/.grunt/
+/.node/
+
+# IDE and editor files
+/.idea/
+/.vscode/
+/.vs/
+/*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.netbeans.xml
+nbproject/
+
+# OS generated files
+ehthumbs.db
+Icon?
+*.stackdump
+
+# Magento deployment files
+/.deployment/
+/phpserver/
+/pub/static/frontend/
+/pub/static/adminhtml/
+/pub/static/_cache/
+
+# Magento generated code
+/generated/code/
+/generated/metadata/
+
+# Magento tests
+/dev/tests/api/_files/
+/dev/tests/integration/tmp/
+/dev/tests/integration/_files/
+/dev/tests/unit/_files/
+/dev/tests/functional/var/
+
+# Magento sample data
+/pub/media/catalog/product/
+/pub/media/customer/
+/pub/media/downloadable/
+/pub/media/import/
+/pub/media/theme/
+
+# Magento backups and exports
+/var/backups/
+/var/export/
+/var/import/
+/var/importexport/
+
+# Magento reports
+/var/report/
+
+# Session files
+/var/session/
+
+# Temporary files
+/var/tmp/
+
+# PHP specific
+.phpunit.result.cache
+/.php_cs.cache
+
+# Environment specific
+/.env
+/.env.local
+/.env.*.local
+
+# Deployment files
+/_deploy/
+/.docker/
+/docker-compose.yml
+/docker-compose.override.yml
+
+# Build artifacts
+/build/
+/phing/
+
+# Magento cloud specific
+/.magento/
+/.magento.app.yaml
+/.magento/services.yaml
+/.magento/routes.yaml
+/.magento.env.yaml
+
+# Log files (except Magento main logs)
+*.log
+!var/log/.gitkeep
+
+# Cache files
+*.cache
+
+# Backup files
+*.backup
+*.bak
+*.sql
+*.tar
+*.gz
+*.zip
+
+# Magento Connect (legacy)
+/downloader/
+/var/connect/
+
+# Magento upgrade
+/var/.setup_cronjob_status
+/var/install.date
+
+# Magento maintenance
+/var/.maintenance.flag
+/var/.maintenance.ip
+
+# Magento security
+/var/.htaccess
+
+# Custom modules development
+/app/code/local/
+/app/code/community/
+
+# Theme development files
+/app/design/frontend/*/*/web/css/source/_extend.less
+/app/design/frontend/*/*/web/css/source/_module.less
+/app/design/frontend/*/*/web/css/source/_variables.less
+/app/design/adminhtml/*/*/web/css/source/_extend.less
+/app/design/adminhtml/*/*/web/css/source/_module.less
+/app/design/adminhtml/*/*/web/css/source/_variables.less
+
+# Magento 2 enterprise specific (if using EE)
+/.github/
+/.gitlab/
+
+# SSL certificates (never commit these)
+/*.crt
+/*.key
+/*.pem
+/.ssl/
+
+# AWS and cloud credentials
+/.aws/
+/aws.yml
+
+# Local development overrides
+/app/etc/di.xml.local
+/app/etc/config.local.php
+
+# Magento patches
+/patches/
+/.patches_applied
+
+# Performance testing
+/dev/tests/performance/jmeter/
+/dev/tests/performance/benchmark.jmx
+
+# Static content deployment temp files
+/pub/static/deployment_version.txt
+
+# Keep empty directories
+!.gitkeep
