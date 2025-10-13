@@ -39,7 +39,7 @@ jobs:
 
       - name: Run composer update if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
-        run: composer update
+        run: composer update --with-all-dependencies
 
       - name: Configurar acesso SSH
         uses: webfactory/ssh-agent@v0.9.0
