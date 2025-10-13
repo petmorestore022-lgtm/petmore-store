@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "495f27b9ab91df6cc990cad70871f1cd",
+    "content-hash": "7bf539821bc7cb719b79bdd68b9ed2fd",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -727,6 +727,41 @@
             "time": "2025-05-05T07:31:11+00:00"
         },
         {
+            "name": "community-engineering/language-pt_br",
+            "version": "0.0.79",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/magento-l10n/language-pt_BR.git",
+                "reference": "8a661d23071eebba7916ea4ece86434f34bc8f4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/magento-l10n/language-pt_BR/zipball/8a661d23071eebba7916ea4ece86434f34bc8f4e",
+                "reference": "8a661d23071eebba7916ea4ece86434f34bc8f4e",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "*"
+            },
+            "type": "magento2-language",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "pt_BR language package.",
+            "support": {
+                "issues": "https://github.com/magento-l10n/language-pt_BR/issues",
+                "source": "https://github.com/magento-l10n/language-pt_BR/tree/v0.0.79"
+            },
+            "time": "2025-01-10T15:00:48+00:00"
+        },
+        {
             "name": "composer/ca-bundle",
             "version": "1.5.8",
             "source": {
@@ -1347,6 +1382,54 @@
                 }
             ],
             "time": "2024-05-06T16:37:16+00:00"
+        },
+        {
+            "name": "cweagans/composer-patches",
+            "version": "1.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cweagans/composer-patches.git",
+                "reference": "e190d4466fe2b103a55467dfa83fc2fecfcaf2db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/e190d4466fe2b103a55467dfa83fc2fecfcaf2db",
+                "reference": "e190d4466fe2b103a55467dfa83fc2fecfcaf2db",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0 || ^2.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "composer/composer": "~1.0 || ~2.0",
+                "phpunit/phpunit": "~4.6"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "cweagans\\Composer\\Patches"
+            },
+            "autoload": {
+                "psr-4": {
+                    "cweagans\\Composer\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Cameron Eagans",
+                    "email": "me@cweagans.net"
+                }
+            ],
+            "description": "Provides a way to patch Composer packages.",
+            "support": {
+                "issues": "https://github.com/cweagans/composer-patches/issues",
+                "source": "https://github.com/cweagans/composer-patches/tree/1.7.3"
+            },
+            "time": "2022-12-20T22:53:13+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -2050,6 +2133,124 @@
                 "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
             "time": "2025-04-09T20:32:01+00:00"
+        },
+        {
+            "name": "frenet/frenet-magento2",
+            "version": "2.4.7.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FrenetGatewaydeFretes/frenet-magento2.git",
+                "reference": "70d2b4e21f0ad0e83fddcc627caebcca17c370c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FrenetGatewaydeFretes/frenet-magento2/zipball/70d2b4e21f0ad0e83fddcc627caebcca17c370c4",
+                "reference": "70d2b4e21f0ad0e83fddcc627caebcca17c370c4",
+                "shasum": ""
+            },
+            "require": {
+                "frenet/frenet-php": "^1.3.1",
+                "magento/framework": "^101.0.0|^102.0.0|^103.0.0|^104.0.0",
+                "magento/module-bundle": "^101.0.0|^102.0.0|^103.0.0|^104.0.0",
+                "magento/module-catalog": "^101.0.0|^102.0.0|^103.0.0|^104.0.0",
+                "magento/module-configurable-product": "^100.0.0",
+                "magento/module-directory": "^100.0.0",
+                "magento/module-downloadable": "^100.0.0",
+                "magento/module-grouped-product": "^100.0.0",
+                "magento/module-quote": "^101.0.0|^102.0.0|^103.0.0|^104.0.0",
+                "magento/module-shipping": "^100.0.0",
+                "magento/module-store": "^101.0.0",
+                "php": "^7.0|>=8.0",
+                "symfony/finder": "^v6.4"
+            },
+            "require-dev": {
+                "magento/magento-coding-standard": "~4.0.0",
+                "phpmd/phpmd": "@stable"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Frenet\\Shipping\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Tiago Sampaio",
+                    "email": "tiago@tiagosampaio.com",
+                    "homepage": "http://tiagosampaio.com",
+                    "role": "Magento Architect"
+                }
+            ],
+            "description": "Integrate your Magento 2 with Frenet Services in a simple way.",
+            "support": {
+                "email": "contato@frenet.com.br",
+                "issues": "https://github.com/FrenetGatewaydeFretes/frenet-magento2/issues",
+                "source": "https://github.com/FrenetGatewaydeFretes/frenet-magento2/tree/2.4.7.5"
+            },
+            "time": "2024-12-13T02:53:44+00:00"
+        },
+        {
+            "name": "frenet/frenet-php",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FrenetGatewaydeFretes/frenet-php.git",
+                "reference": "293c58e7f818e0eee5d143b0f761b8b5adc58bb8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FrenetGatewaydeFretes/frenet-php/zipball/293c58e7f818e0eee5d143b0f761b8b5adc58bb8",
+                "reference": "293c58e7f818e0eee5d143b0f761b8b5adc58bb8",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": ">=6.3",
+                "monolog/monolog": ">=1.17",
+                "php": "^7.0|>=8.0",
+                "php-di/php-di": "^6.0"
+            },
+            "require-dev": {
+                "codacy/coverage": "dev-master",
+                "phpmd/phpmd": "^2.6",
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "^3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/app/bootstrap.php"
+                ],
+                "psr-4": {
+                    "Frenet\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frenet",
+                    "email": "n3@tfrenet.com.br"
+                }
+            ],
+            "description": "The easiest way to integrate your PHP application with Frenet API.",
+            "keywords": [
+                "frenet",
+                "sdk",
+                "shipping"
+            ],
+            "support": {
+                "source": "https://github.com/FrenetGatewaydeFretes/frenet-php/tree/1.3.1"
+            },
+            "time": "2022-11-03T17:39:38+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4360,6 +4561,67 @@
                 }
             ],
             "time": "2025-09-23T11:38:01+00:00"
+        },
+        {
+            "name": "laravel/serializable-closure",
+            "version": "v1.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/serializable-closure.git",
+                "reference": "4f48ade902b94323ca3be7646db16209ec76be3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/4f48ade902b94323ca3be7646db16209ec76be3d",
+                "reference": "4f48ade902b94323ca3be7646db16209ec76be3d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
+                "nesbot/carbon": "^2.61|^3.0",
+                "pestphp/pest": "^1.21.3",
+                "phpstan/phpstan": "^1.8.2",
+                "symfony/var-dumper": "^5.4.11|^6.2.0|^7.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\SerializableClosure\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Nuno Maduro",
+                    "email": "nuno@laravel.com"
+                }
+            ],
+            "description": "Laravel Serializable Closure provides an easy and secure way to serialize closures in PHP.",
+            "keywords": [
+                "closure",
+                "laravel",
+                "serializable"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/serializable-closure/issues",
+                "source": "https://github.com/laravel/serializable-closure"
+            },
+            "time": "2024-11-14T18:34:49+00:00"
         },
         {
             "name": "league/flysystem",
@@ -18553,6 +18815,91 @@
             "time": "2025-06-20T07:55:02+00:00"
         },
         {
+            "name": "mageplaza/magento-2-portuguese-brazilian-language-pack",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mageplaza/magento-2-portuguese-brazilian-language-pack.git",
+                "reference": "d1e28628a48ea60b6b87151794670b556c9f9544"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mageplaza/magento-2-portuguese-brazilian-language-pack/zipball/d1e28628a48ea60b6b87151794670b556c9f9544",
+                "reference": "d1e28628a48ea60b6b87151794670b556c9f9544",
+                "shasum": ""
+            },
+            "require": {
+                "mageplaza/module-core": "^1.3.13"
+            },
+            "default-branch": true,
+            "type": "magento2-language",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mageplaza team",
+                    "email": "hi@mageplaza.com",
+                    "homepage": "https://www.mageplaza.com",
+                    "role": "Leader"
+                }
+            ],
+            "description": "Portuguese Brazilian language package for Magento 2",
+            "homepage": "https://www.mageplaza.com",
+            "support": {
+                "issues": "https://github.com/mageplaza/magento-2-portuguese-brazilian-language-pack/issues",
+                "source": "https://github.com/mageplaza/magento-2-portuguese-brazilian-language-pack/tree/master"
+            },
+            "time": "2022-02-22T09:06:50+00:00"
+        },
+        {
+            "name": "mageplaza/module-core",
+            "version": "1.5.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mageplaza/module-core.git",
+                "reference": "44b2ced6cc24b0043b5b87a330152d38be5e79ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mageplaza/module-core/zipball/44b2ced6cc24b0043b5b87a330152d38be5e79ba",
+                "reference": "44b2ced6cc24b0043b5b87a330152d38be5e79ba",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Mageplaza\\Core\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Mageplaza",
+                    "email": "support@mageplaza.com",
+                    "homepage": "https://www.mageplaza.com",
+                    "role": "Technical Support"
+                }
+            ],
+            "description": "Mageplaza Core for Magento 2",
+            "support": {
+                "source": "https://github.com/mageplaza/module-core/tree/v1.5.14"
+            },
+            "time": "2025-07-02T10:33:12+00:00"
+        },
+        {
             "name": "marc-mabe/php-enum",
             "version": "v4.7.2",
             "source": {
@@ -19737,6 +20084,179 @@
                 "source": "https://github.com/php-amqplib/php-amqplib/tree/v3.7.3"
             },
             "time": "2025-02-18T20:11:13+00:00"
+        },
+        {
+            "name": "php-di/invoker",
+            "version": "2.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-DI/Invoker.git",
+                "reference": "3c1ddfdef181431fbc4be83378f6d036d59e81e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-DI/Invoker/zipball/3c1ddfdef181431fbc4be83378f6d036d59e81e1",
+                "reference": "3c1ddfdef181431fbc4be83378f6d036d59e81e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.3",
+                "psr/container": "^1.0|^2.0"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1.8",
+                "mnapoli/hard-mode": "~0.3.0",
+                "phpunit/phpunit": "^9.0 || ^10 || ^11 || ^12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Invoker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Generic and extensible callable invoker",
+            "homepage": "https://github.com/PHP-DI/Invoker",
+            "keywords": [
+                "callable",
+                "dependency",
+                "dependency-injection",
+                "injection",
+                "invoke",
+                "invoker"
+            ],
+            "support": {
+                "issues": "https://github.com/PHP-DI/Invoker/issues",
+                "source": "https://github.com/PHP-DI/Invoker/tree/2.3.7"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-08-30T10:22:22+00:00"
+        },
+        {
+            "name": "php-di/php-di",
+            "version": "6.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-DI/PHP-DI.git",
+                "reference": "ae0f1b3b03d8b29dff81747063cbfd6276246cc4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/ae0f1b3b03d8b29dff81747063cbfd6276246cc4",
+                "reference": "ae0f1b3b03d8b29dff81747063cbfd6276246cc4",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/serializable-closure": "^1.0",
+                "php": ">=7.4.0",
+                "php-di/invoker": "^2.0",
+                "php-di/phpdoc-reader": "^2.0.1",
+                "psr/container": "^1.0"
+            },
+            "provide": {
+                "psr/container-implementation": "^1.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "~1.10",
+                "friendsofphp/php-cs-fixer": "^2.4",
+                "mnapoli/phpunit-easymock": "^1.2",
+                "ocramius/proxy-manager": "^2.11.2",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^9.5"
+            },
+            "suggest": {
+                "doctrine/annotations": "Install it if you want to use annotations (version ~1.2)",
+                "ocramius/proxy-manager": "Install it if you want to use lazy injection (version ~2.0)"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "DI\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The dependency injection container for humans",
+            "homepage": "https://php-di.org/",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interop",
+                "dependency injection",
+                "di",
+                "ioc",
+                "psr11"
+            ],
+            "support": {
+                "issues": "https://github.com/PHP-DI/PHP-DI/issues",
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/6.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/php-di/php-di",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-09T16:46:38+00:00"
+        },
+        {
+            "name": "php-di/phpdoc-reader",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-DI/PhpDocReader.git",
+                "reference": "66daff34cbd2627740ffec9469ffbac9f8c8185c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-DI/PhpDocReader/zipball/66daff34cbd2627740ffec9469ffbac9f8c8185c",
+                "reference": "66daff34cbd2627740ffec9469ffbac9f8c8185c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "mnapoli/hard-mode": "~0.3.0",
+                "phpunit/phpunit": "^8.5|^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpDocReader\\": "src/PhpDocReader"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PhpDocReader parses @var and @param values in PHP docblocks (supports namespaced class names with the same resolution rules as PHP)",
+            "keywords": [
+                "phpdoc",
+                "reflection"
+            ],
+            "support": {
+                "issues": "https://github.com/PHP-DI/PhpDocReader/issues",
+                "source": "https://github.com/PHP-DI/PhpDocReader/tree/2.2.1"
+            },
+            "time": "2020-10-12T12:39:22+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -29392,8 +29912,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
+        "mageplaza/magento-2-portuguese-brazilian-language-pack": 20,
         "pdepend/pdepend": 20,
         "phpmd/phpmd": 20
     },

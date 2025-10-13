@@ -29,6 +29,9 @@ jobs:
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
+      - name: Run composer global require cweagans/composer-patches
+        run: composer global require cweagans/composer-patches
+
       # - name: Run composer install magento/module-remote-storage
       #   if: steps.check_files.outputs.files_exists == 'true'
       #   run: composer require magento/module-remote-storage
