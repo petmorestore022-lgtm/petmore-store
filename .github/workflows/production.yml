@@ -25,7 +25,7 @@ jobs:
         with:
           files: 'composer.json'
 
-      - name: Configurar autenticação Magento no Composer
+      - name: Configurar autenticação Magento no Composers
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
