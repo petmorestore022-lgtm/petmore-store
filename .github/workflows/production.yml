@@ -1,0 +1,170 @@
+name: Petmore Store - Produção
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Check if composer.json exists
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'composer.json'
+
+      - name: Configurar autenticação Magento no Composer
+        run: |
+          composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+
+      # - name: Run composer install magento/module-remote-storage
+      #   if: steps.check_files.outputs.files_exists == 'true'
+      #   run: composer require magento/module-remote-storage
+
+      # - name: Run composer install if composer.json exists
+      #   if: steps.check_files.outputs.files_exists == 'true'
+      #   run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+
+      - name: Run composer update if composer.json exists
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: composer update
+
+      - name: Configurar acesso SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+
+      - name: Testar conexão
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} "echo ✅ Conectado com sucesso"
+
+      - name: Criar path da aplicação e dar permissão
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+          sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
+          sudo chown -R $USER:$USER ${{ vars.APP_COMPLETE_PATH }}/building
+          EOF
+
+      - name: Copiar arquivos para VM
+        run: |
+          rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./ \
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}/building
+
+      - name: Criar env.php com envsubst
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            export REMOTE_STORAGE_DRIVER=${{ secrets.REMOTE_STORAGE_DRIVER }}
+            export BACKEND_FRONTNAME=${{ secrets.BACKEND_FRONTNAME }}
+            export CACHE_GRAPHQL_ID_SALT=${{ secrets.CACHE_GRAPHQL_ID_SALT }}
+            export CACHE_FRONTEND_DEFAULT_ID_PREFIX=${{ secrets.CACHE_FRONTEND_DEFAULT_ID_PREFIX }}
+            export CACHE_PAGE_CACHE_ID_PREFIX=${{ secrets.CACHE_PAGE_CACHE_ID_PREFIX }}
+            export CONNECTION_DEFAULT_HOST=${{ secrets.CONNECTION_DEFAULT_HOST }}
+            export CONNECTION_DEFAULT_PORT=${{ secrets.CONNECTION_DEFAULT_PORT }}
+            export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
+            export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
+            export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
+
+            export DOWNLOADABLE_DOMAINS=${{ vars.DOWNLOADABLE_DOMAINS }}
+            export CATALOG_SEARCH_ENGINE=${{ secrets.CATALOG_SEARCH_ENGINE }}
+            export CATALOG_SEARCH_SERVER_HOSTNAME=${{ secrets.CATALOG_SEARCH_SERVER_HOSTNAME }}
+            export CATALOG_SEARCH_SERVER_PORT=${{ secrets.CATALOG_SEARCH_SERVER_PORT }}
+            export CATALOG_SEARCH_INDEX_PREFIX=${{ secrets.CATALOG_SEARCH_INDEX_PREFIX }}
+            export CATALOG_SEARCH_SERVER_TIMEOUT=${{ secrets.CATALOG_SEARCH_SERVER_TIMEOUT }}
+            export WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE }}
+            export WEB_DEFAULT_BASE_MEDIA_URL_SECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_SECURE }}
+            export REMOTE_STORAGE_CONFIG_PREFIX=${{ vars.REMOTE_STORAGE_CONFIG_PREFIX }}
+            export CRYPT_KEY=${{ secrets.CRYPT_KEY }}
+
+            export REMOTE_STORAGE_DRIVER=${{ secrets.REMOTE_STORAGE_DRIVER }}
+            export REMOTE_STORAGE_CONFIG_BUCKET=${{ secrets.REMOTE_STORAGE_CONFIG_BUCKET }}
+            export REMOTE_STORAGE_CONFIG_REGION=${{ secrets.REMOTE_STORAGE_CONFIG_REGION }}
+            export REMOTE_STORAGE_CONFIG_USE_ENDPOINT=${{ secrets.REMOTE_STORAGE_CONFIG_USE_ENDPOINT }}
+            export REMOTE_STORAGE_CONFIG_KEY=${{ secrets.REMOTE_STORAGE_CONFIG_KEY }}
+            export REMOTE_STORAGE_CONFIG_BUCKET_PRIVATE=${{ secrets.REMOTE_STORAGE_CONFIG_BUCKET_PRIVATE }}
+            export REMOTE_STORAGE_CONFIG_KEY_PRIVATE=${{ secrets.REMOTE_STORAGE_CONFIG_KEY_PRIVATE }}
+            export REMOTE_STORAGE_CONFIG_SECRET_PRIVATE=${{ secrets.REMOTE_STORAGE_CONFIG_SECRET_PRIVATE }}
+            export REMOTE_STORAGE_CONFIG_SECRET=${{ secrets.REMOTE_STORAGE_CONFIG_SECRET }}
+            export REMOTE_STORAGE_CONFIG_ENDPOINT=${{ secrets.REMOTE_STORAGE_CONFIG_ENDPOINT }}
+            export REMOTE_STORAGE_CONFIG_USE_PATH_STYLE=${{ secrets.REMOTE_STORAGE_CONFIG_USE_PATH_STYLE }}
+            export REMOTE_STORAGE_CONFIG_USE_URL=${{ secrets.REMOTE_STORAGE_CONFIG_USE_URL }}
+            export REMOTE_STORAGE_CONFIG_THROW=${{ secrets.REMOTE_STORAGE_CONFIG_THROW }}
+            export REMOTE_STORAGE_CONFIG_HTTP_HTTP_CONNECT_TIMEOUT=${{ secrets.REMOTE_STORAGE_CONFIG_HTTP_HTTP_CONNECT_TIMEOUT }}
+            export REMOTE_STORAGE_CONFIG_HTTP_TIMEOUT=${{ secrets.REMOTE_STORAGE_CONFIG_HTTP_TIMEOUT }}
+
+            envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
+          EOF
+
+      - name: Executar setup da Aplicação Petmore Store enable and upgrade
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=60 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            rm -rf var/cache/*
+            rm -rf var/page_cache/*
+            rm -rf generated/code/*
+            rm -rf generated/metadata/*
+            rm -rf var/view_preprocessed/*
+
+            # Clear static files
+            rm -rf pub/static/frontend/*
+            rm -rf pub/static/adminhtml/*
+
+            bin/magento cache:clean
+            bin/magento cache:flush
+
+            # php bin/magento module:enable Magento_AwsS
+
+            bin/magento module:enable --all --clear-static-content
+            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
+
+          EOF
+
+      - name: Executar setup da Aplicação Petmore Store compile
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=60 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            php -d memory_limit=2G bin/magento setup:di:compile
+
+          EOF
+
+      - name: Executar setup da Aplicação Petmore Store setup
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=60 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy en_US pt_BR -f
+
+            # bin/magento cron:install
+            bin/magento deploy:mode:set developer
+          EOF
+
+      - name: Corrigir permissões do path building
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            sudo chown -R www-data:www-data .
+          EOF
+
+      - name: Movendo diretorio para o path final
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+          EOF
+
