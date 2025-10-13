@@ -219,8 +219,6 @@ jobs:
             echo "3. Calendar.css:"
             ls -la pub/static/frontend/Magento/luma/en_US/mage/calendar.css 2>/dev/null && echo "✅ EXISTE" || echo "❌ NÃO EXISTE"
 
-            echo "4. Indexadores:"
-            php bin/magento indexer:status
           EOF
 
       - name: Movendo diretório para o path final
