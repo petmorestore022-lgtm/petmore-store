@@ -23,7 +23,7 @@
         "magento/composer-root-update-plugin": "^2.0.4",
         "community-engineering/language-pt_br": "*",
         "frenet/frenet-magento2": "^2.4",
-        "league/flysystem-aws-s3-v3": "^2.5",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
         "pagarme/pagarme-magento2-module": "^2.6.2"
     },
