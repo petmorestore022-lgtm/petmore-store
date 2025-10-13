@@ -32,9 +32,9 @@ jobs:
       - name: Run composer global require cweagans/composer-patches
         run: composer global require cweagans/composer-patches
 
-      # - name: Run composer install magento/module-remote-storage
-      #   if: steps.check_files.outputs.files_exists == 'true'
-      #   run: composer require magento/module-remote-storage
+      - name: Run composer global config --no-plugins allow-plugins.cweagans/composer-patches true
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: composer global config --no-plugins allow-plugins.cweagans/composer-patches true
 
       - name: Run composer install if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
