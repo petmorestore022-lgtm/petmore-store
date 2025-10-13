@@ -25,7 +25,7 @@
         "frenet/frenet-magento2": "^2.4",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
-        "pagarme/pagarme-magento2-module": "^2.7.1"
+        "pagarme/pagarme-magento2-module": "^3.0"
     },
     "autoload": {
         "exclude-from-classmap": [
