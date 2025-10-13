@@ -18,6 +18,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, curl, zip, soap, bcmath, json
 
       - name: Check if composer.json exists
         id: check_files
@@ -25,20 +26,15 @@ jobs:
         with:
           files: 'composer.json'
 
-      - name: Configurar autenticação Magento no Composers
+      - name: Configurar autenticação Magento no Composer
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
-      # - name: Run composer global require cweagans/composer-patches
-      #   run: composer global require cweagans/composer-patches
-
-      - name: Run composer global config --no-plugins allow-plugins.cweagans/composer-patches true
-        if: steps.check_files.outputs.files_exists == 'true'
-        run: composer global config --no-plugins allow-plugins.cweagans/composer-patches true
-
       - name: Run composer install if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+        run: |
+          composer validate --no-check-publish
+          composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
 
       # - name: Run composer update if composer.json exists
       #   if: steps.check_files.outputs.files_exists == 'true'
@@ -57,7 +53,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
           sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
-          sudo chown -R $USER:$USER ${{ vars.APP_COMPLETE_PATH }}/building
+          sudo chown -R ${{ secrets.MAGALU_USER }}:${{ secrets.MAGALU_USER }} ${{ vars.APP_COMPLETE_PATH }}/building
           EOF
 
       - name: Copiar arquivos para VM
@@ -111,53 +107,131 @@ jobs:
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
           EOF
 
-      - name: Executar setup da Aplicação Petmore Store enable and upgrade
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            bin/magento cache:clean
-            bin/magento cache:flush
-
-            # php bin/magento module:enable Magento_AwsS
-
-            bin/magento module:enable --all --clear-static-content
-            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
-
-          EOF
-
-      - name: Executar setup da Aplicação Petmore Store compile
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            php -d memory_limit=2G bin/magento setup:di:compile
-
-          EOF
-
-      - name: Executar setup da Aplicação Petmore Store setup
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            php -d memory_limit=2G bin/magento setup:static-content:deploy -f
-
-            # bin/magento cron:install
-            bin/magento deploy:mode:set developer
-          EOF
-
-      - name: Corrigir permissões do path building
+      - name: Configurar permissões iniciais
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Configurar permissões corretas
+            sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
+            sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
+            sudo chmod u+x bin/magento
+          EOF
+
+      - name: Limpar cache e habilitar módulos
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Limpar tudo antes de começar
+            rm -rf var/cache/* var/page_cache/* generated/* var/view_preprocessed/* pub/static/*
+
+            # Habilitar módulos
+            bin/magento module:enable --all --clear-static-content
+
+            # Setup upgrade
+            php -d memory_limit=4G bin/magento setup:upgrade --keep-generated
+          EOF
+
+      - name: Compilar dependências
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Compilar DI
+            php -d memory_limit=4G bin/magento setup:di:compile
+          EOF
+
+      - name: Deploy completo de conteúdo estático
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Deploy estático completo para todos os temas
+            php -d memory_limit=4G bin/magento setup:static-content:deploy -f --area frontend --area adminhtml --jobs=4
+
+            # Verificar se arquivos foram gerados
+            echo "=== Verificando arquivos estáticos gerados ==="
+            ls -la pub/static/frontend/Magento/luma/en_US/mage/ 2>/dev/null || echo "Diretório mage ainda não existe"
+          EOF
+
+      - name: Configurar modo produção e finalizar
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Mudar para modo produção
+            php bin/magento deploy:mode:set production
+
+            # Reindexar tudo
+            php bin/magento indexer:reindex
+
+            # Configurar cron jobs
+            php bin/magento cron:install --non-optional
+
+            # Limpar cache final
+            php bin/magento cache:clean
+            php bin/magento cache:flush
+
+            # Verificar modo final
+            echo "=== Modo final ==="
+            php bin/magento deploy:mode:show
+
+            # Verificar arquivos estáticos
+            echo "=== Arquivos estáticos ==="
+            if [ -f "pub/static/frontend/Magento/luma/en_US/mage/calendar.css" ]; then
+                echo "✅ calendar.css gerado com sucesso!"
+            else
+                echo "❌ calendar.css NÃO foi gerado - tentando deploy específico..."
+                # Tentar deploy específico se ainda não gerou
+                php -d memory_limit=4G bin/magento setup:static-content:deploy en_US -t Magento/luma --force
+            fi
+          EOF
+
+      - name: Corrigir permissões finais
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Permissões de produção
+            sudo find . -type f -exec chmod 644 {} \;
+            sudo find . -type d -exec chmod 755 {} \;
+            sudo chmod 600 app/etc/env.php
+            sudo chmod 600 app/etc/config.php
+
+            # Proprietário correto
             sudo chown -R www-data:www-data .
           EOF
 
-      - name: Movendo diretorio para o path final
+      - name: Verificação final
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
-            sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
-            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            echo "=== VERIFICAÇÃO FINAL ==="
+            echo "1. Modo:"
+            php bin/magento deploy:mode:show
+
+            echo "2. Arquivos estáticos:"
+            find pub/static/frontend/Magento/luma/en_US -name "*.css" | head -5
+            find pub/static/frontend/Magento/luma/en_US -name "*.js" | head -5
+
+            echo "3. Calendar.css:"
+            ls -la pub/static/frontend/Magento/luma/en_US/mage/calendar.css 2>/dev/null && echo "✅ EXISTE" || echo "❌ NÃO EXISTE"
+
+            echo "4. Indexadores:"
+            php bin/magento indexer:status
           EOF
 
+      - name: Movendo diretório para o path final
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            # Criar backup da versão atual
+            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
+            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
+
+            # Mover nova versão
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+
+            echo "✅ Deploy concluído! Nova versão em produção."
+          EOF
