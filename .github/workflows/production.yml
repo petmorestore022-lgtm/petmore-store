@@ -130,7 +130,7 @@ jobs:
             bin/magento module:enable --all --clear-static-content
 
             # Setup upgrade
-            php -d memory_limit=4G bin/magento setup:upgrade --keep-generated
+            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
           EOF
 
       - name: Compilar dependências
@@ -139,7 +139,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             # Compilar DI
-            php -d memory_limit=4G bin/magento setup:di:compile
+            php -d memory_limit=2G bin/magento setup:di:compile
           EOF
 
       - name: Deploy completo de conteúdo estático - admin
@@ -149,9 +149,9 @@ jobs:
 
             echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
             # Deploy para adminhtml - vai compilar todos os temas admin automaticamente
-            # php -d memory_limit=4G bin/magento setup:static-content:deploy --area adminhtml --force --jobs=1
+            # php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --force --jobs=1
 
-            php -d memory_limit=4G bin/magento setup:static-content:deploy --area adminhtml --force
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force -v
 
             echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
             echo "Temas Admin compilados:"
@@ -166,9 +166,9 @@ jobs:
 
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
             # Deploy para frontend - vai compilar todos os temas frontend automaticamente
-            # php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force --jobs=1
+            # php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs=1
 
-            php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
 
             echo "Temas Frontend compilados:"
             ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
@@ -203,7 +203,7 @@ jobs:
             else
                 echo "❌ calendar.css NÃO foi gerado - tentando deploy específico..."
                 # Tentar deploy específico se ainda não gerou
-                php -d memory_limit=4G bin/magento setup:static-content:deploy en_US -t Magento/luma --force
+                php -d memory_limit=2G bin/magento setup:static-content:deploy en_US -t Magento/luma --force
             fi
           EOF
 
