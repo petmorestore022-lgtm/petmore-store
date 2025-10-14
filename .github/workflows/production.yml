@@ -41,18 +41,18 @@ jobs:
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
       # 5. Composer Install
-      # - name: Run composer install if composer.json exists
-      #   id: composer_install
-      #   if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
-      #   run: |
-      #     composer validate --no-check-publish
-      #     composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
-
-      - name: Run composer update if composer.json exists
+      - name: Run composer install if composer.json exists
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
-          composer update
+          composer validate --no-check-publish
+          composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
+
+      # - name: Run composer update if composer.json exists
+      #   id: composer_install
+      #   if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+      #   run: |
+      #     composer update
 
       # 6. Configurar SSH
       - name: Configurar acesso SSH
