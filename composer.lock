@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2048dbe91881a6f1665cce16d4b0976f",
+    "content-hash": "0835c7954307e4a541027c613e1c1e7e",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -19414,30 +19414,31 @@
         },
         {
             "name": "pagarme/pagarme-magento2-module",
-            "version": "dev-develop",
+            "version": "2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pagarme/magento2.git",
-                "reference": "988469a9f57c9983bf9ed9ec17f38294ad04da1d"
+                "reference": "ed4d7f67f9360b67e599c8de78afda9ef49fc8cd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/magento2/zipball/988469a9f57c9983bf9ed9ec17f38294ad04da1d",
-                "reference": "988469a9f57c9983bf9ed9ec17f38294ad04da1d",
+                "url": "https://api.github.com/repos/pagarme/magento2/zipball/ed4d7f67f9360b67e599c8de78afda9ef49fc8cd",
+                "reference": "ed4d7f67f9360b67e599c8de78afda9ef49fc8cd",
                 "shasum": ""
             },
             "require": {
-                "pagarme/ecommerce-module-core": "dev-develop",
+                "pagarme/ecommerce-module-core": "~2.8.0",
                 "php": ">=7.1"
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "~1.2",
                 "lusitanian/oauth": "~0.3 <=0.7.0",
                 "magento-ecg/coding-standard": "dev-master",
+                "mockery/mockery": "1.3.x-dev",
                 "pdepend/pdepend": "2.2.2",
                 "phpdocumentor/phpdocumentor": "^2.8",
                 "phpmd/phpmd": "@stable",
-                "phpunit/phpunit": "4.1.0",
+                "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9",
                 "phpunit/phpunit-selenium": ">=1.2",
                 "rregeer/phpunit-coverage-check": "^0.1.3",
                 "satooshi/php-coveralls": "^1.0",
@@ -19466,9 +19467,9 @@
             "description": "Magento 2 Module Pagar.me",
             "support": {
                 "issues": "https://github.com/pagarme/magento2/issues",
-                "source": "https://github.com/pagarme/magento2/tree/develop"
+                "source": "https://github.com/pagarme/magento2/tree/2.7.1"
             },
-            "time": "2024-06-10T18:51:39+00:00"
+            "time": "2025-09-16T17:37:55+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -29973,7 +29974,6 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "mageplaza/magento-2-portuguese-brazilian-language-pack": 20,
-        "pagarme/pagarme-magento2-module": 20,
         "pdepend/pdepend": 20,
         "phpmd/phpmd": 20
     },

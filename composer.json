@@ -33,11 +33,12 @@
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/product-community-edition": "2.4.8",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
-        "pagarme/pagarme-magento2-module": "2.7.1",
-        "monolog/monolog": "^3.6"
+        "monolog/monolog": "^3.6",
+        "pagarme/ecommerce-module-core": "*",
+        "pagarme/pagarme-magento2-module": "2.7.1"
     },
      "replace": {
-        "pagarme/ecommerce-module-core": "*"
+        "pagarme/ecommerce-module-core": "~2.8.0"
     },
     "autoload": {
         "exclude-from-classmap": [
