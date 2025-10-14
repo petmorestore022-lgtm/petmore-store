@@ -174,6 +174,10 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            ls -la /var/www/html/petmore-store/building/vendor/petmorestore022-lgtm/pagarme-ecommerce-module-core/src/Recurrence/Interfaces/RepetitionInter.php  face 2>/dev/null || echo "Arquivo Interfaces/RepetitionInter.php não localizado"
+            ls -la /var/www/html/petmore-store/building/vendor/petmorestore022-lgtm/pagarme-ecommerce-module-core/src/Recurrence/Aggregates/Repetition.php  face 2>/dev/null || echo "Arquivo Aggregates/Repetition.php não localizado"
+
             php -d memory_limit=2G bin/magento setup:di:compile
           EOF
 
