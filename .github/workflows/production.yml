@@ -168,7 +168,7 @@ jobs:
             bin/magento module:enable --all --clear-static-content
             bin/magento module:enable Pagarme_Pagarme
 
-            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
+            php -d memory_limit=2G bin/magento setup:upgrade
           EOF
 
       # 13. Compilar DI
