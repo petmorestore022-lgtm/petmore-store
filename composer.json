@@ -2,8 +2,6 @@
     "name": "magento/project-community-edition",
     "description": "eCommerce Platform for Growth (Community Edition)",
     "type": "project",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "license": [
         "OSL-3.0",
         "AFL-3.0"
@@ -33,12 +31,7 @@
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/product-community-edition": "2.4.8",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
-        "monolog/monolog": "^3.6",
-        "pagarme/ecommerce-module-core": "*",
-        "pagarme/pagarme-magento2-module": "2.7.1"
-    },
-     "replace": {
-        "pagarme/ecommerce-module-core": "~2.8.0"
+        "petmorestore022-lgtm/pagarme-magento2":"dev-main"
     },
     "autoload": {
         "exclude-from-classmap": [
@@ -90,6 +83,10 @@
         {
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/petmorestore022-lgtm/pagarme-magento2"
         }
     ],
     "extra": {
