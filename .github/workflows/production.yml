@@ -146,8 +146,12 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             # Configurar permissões corretas
+            sudo chmod -R g+w vendor/
+            sudo find vendor -type d -exec chmod g+ws {} \;
+
             sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
             sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
+
             sudo chmod u+x bin/magento
           EOF
 
@@ -168,6 +172,24 @@ jobs:
           EOF
 
       # 13. Compilar DI
+      - name: Debug detalhado da estrutura Pagarme
+        id: debug_pagarme_structure
+        if: steps.set_permissions.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            echo "=== ESTRUTURA COMPLETA DO PAGARME ==="
+            echo "1. Diretórios em vendor/pagarme/:"
+            ls -la vendor/pagarme/
+
+            echo "2. Diretório Recurrence/Interfaces:"
+            ls -la vendor/pagarme/ecommerce-module-core/src/Recurrence/Interfaces/ 2>/dev/null || echo "Diretório não encontrado"
+
+            echo "3. Arquivos PHP no core do Pagarme:"
+            find vendor/pagarme/ecommerce-module-core/src/ -name "*.php" | head -10
+          EOF
+
       - name: Compilar dependências
         id: compile_dependecies_on_building
         if: steps.clear_cache_enable_modules.outcome == 'success'
