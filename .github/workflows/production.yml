@@ -179,14 +179,18 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             echo "=== ESTRUTURA COMPLETA DO PAGARME ==="
-            echo "1. Diretórios em vendor/pagarme/:"
-            ls -la vendor/pagarme/
+            echo "1. Diretórios em vendor/petmorestore022-lgtm/:"
+            ls -la vendor/petmorestore022-lgtm/
+
+            echo "=== ESTRUTURA COMPLETA DO PAGARME ==="
+            echo "1. Diretórios em vendor/petmorestore022-lgtm/:"
+            ls -la vendor/petmorestore022-lgtm/pagarme-ecommerce-module-core/
 
             echo "2. Diretório Recurrence/Interfaces:"
-            ls -la vendor/pagarme/ecommerce-module-core/src/Recurrence/Interfaces/ 2>/dev/null || echo "Diretório não encontrado"
+            ls -la vendor/petmorestore022-lgtm/pagarme-ecommerce-module-core/src/Recurrence/Interfaces/ 2>/dev/null || echo "Diretório não encontrado"
 
             # echo "3. Arquivos PHP no core do Pagarme:"
-            # find vendor/pagarme/ecommerce-module-core/src/ -name "*.php" | head -10
+            # find vendor/petmorestore022-lgtm/pagarme-ecommerce-module-core/src/ -name "*.php" | head -10
           EOF
 
       - name: Compilar dependências
