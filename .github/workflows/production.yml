@@ -48,7 +48,7 @@ jobs:
       #     composer validate --no-check-publish
       #     composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
 
-      # - name: Run composer update if composer.json exists
+      - name: Run composer update if composer.json exists
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
