@@ -160,7 +160,10 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             rm -rf var/cache/* var/page_cache/* generated/* var/view_preprocessed/* pub/static/*
+
             bin/magento module:enable --all --clear-static-content
+            bin/magento module:enable Pagarme_Pagarme
+
             php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
           EOF
 
