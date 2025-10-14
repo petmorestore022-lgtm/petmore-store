@@ -1,5 +1,5 @@
   "require": {
-         "monolog/monolog": "^3.0",
++        "monolog/monolog": "^2 || ^3",
          "php": ">=7.1",
          "ext-json": "*",
          "ext-mbstring": "*"

@@ -95,5 +95,9 @@
             "Allow Monolog 3": "patches/pagarme-monolog3.patch"
         }
     }
+    },
+    "replace": {
+        "monolog/monolog": "3.6.0"
     }
+
 }
