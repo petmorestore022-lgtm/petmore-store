@@ -31,7 +31,7 @@
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/product-community-edition": "2.4.8",
         "mageplaza/magento-2-portuguese-brazilian-language-pack": "dev-master",
-        "petmorestore022-lgtm/pagarme-magento2":"dev-main"
+        "petmorestore022-lgtm/pagarme-magento2": "^1.0"
     },
     "autoload": {
         "exclude-from-classmap": [
@@ -83,10 +83,6 @@
         {
             "type": "composer",
             "url": "https://repo.magento.com/"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/petmorestore022-lgtm/pagarme-magento2"
         }
     ],
     "extra": {

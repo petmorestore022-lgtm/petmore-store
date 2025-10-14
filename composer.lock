@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e608582e617fe025d98de4e63a50aec",
+    "content-hash": "a216042dd6f2ccffcd654833c7feab2e",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -296,16 +296,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.356.38",
+            "version": "3.356.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "b53c1e580b025da5e068106330125894a347cc75"
+                "reference": "1a08e07656baf7328e18a98b8ec766a6fd5c92a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/b53c1e580b025da5e068106330125894a347cc75",
-                "reference": "b53c1e580b025da5e068106330125894a347cc75",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1a08e07656baf7328e18a98b8ec766a6fd5c92a9",
+                "reference": "1a08e07656baf7328e18a98b8ec766a6fd5c92a9",
                 "shasum": ""
             },
             "require": {
@@ -387,9 +387,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.38"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.356.39"
             },
-            "time": "2025-10-13T18:05:18+00:00"
+            "time": "2025-10-14T18:08:04+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -20177,16 +20177,16 @@
         },
         {
             "name": "petmorestore022-lgtm/pagarme-ecommerce-module-core",
-            "version": "dev-main",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core.git",
-                "reference": "4b868780d3508b23342f1cc2628b3531d72f3722"
+                "reference": "4fb259af53904262494e21e9476751823a40f4af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/petmorestore022-lgtm/pagarme-ecommerce-module-core/zipball/4b868780d3508b23342f1cc2628b3531d72f3722",
-                "reference": "4b868780d3508b23342f1cc2628b3531d72f3722",
+                "url": "https://api.github.com/repos/petmorestore022-lgtm/pagarme-ecommerce-module-core/zipball/4fb259af53904262494e21e9476751823a40f4af",
+                "reference": "4fb259af53904262494e21e9476751823a40f4af",
                 "shasum": ""
             },
             "require": {
@@ -20201,7 +20201,6 @@
                 "nesbot/carbon": "1.39.0",
                 "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -20210,20 +20209,7 @@
                     "Pagarme\\Core\\Test\\Mock\\": "tests\\mock"
                 }
             },
-            "scripts": {
-                "post-install-cmd": [
-                    "cp 'hooks/pre-commit' '.git/hooks/pre-commit'"
-                ],
-                "post-update-cmd": [
-                    "cp 'hooks/pre-commit' '.git/hooks/pre-commit'"
-                ],
-                "tests": [
-                    "vendor/bin/phpunit --colors=always"
-                ],
-                "tests-coverage": [
-                    "vendor/bin/phpunit --colors=always --coverage-html ./tests/report"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -20234,27 +20220,27 @@
             ],
             "description": "Core component for Pagar.me e-commerce platform modules.",
             "support": {
-                "source": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core/tree/1.0.1",
-                "issues": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core/issues"
+                "issues": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core/issues",
+                "source": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core/tree/1.0.3"
             },
-            "time": "2025-10-14T16:50:00+00:00"
+            "time": "2025-10-14T19:02:27+00:00"
         },
         {
             "name": "petmorestore022-lgtm/pagarme-magento2",
-            "version": "dev-main",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/petmorestore022-lgtm/pagarme-magento2.git",
-                "reference": "8c2ae0b4270480c1b0c5d3716166c9eda639c967"
+                "reference": "dfea8ad00bcb9f1453bfa0f237360aca5934083d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/petmorestore022-lgtm/pagarme-magento2/zipball/8c2ae0b4270480c1b0c5d3716166c9eda639c967",
-                "reference": "8c2ae0b4270480c1b0c5d3716166c9eda639c967",
+                "url": "https://api.github.com/repos/petmorestore022-lgtm/pagarme-magento2/zipball/dfea8ad00bcb9f1453bfa0f237360aca5934083d",
+                "reference": "dfea8ad00bcb9f1453bfa0f237360aca5934083d",
                 "shasum": ""
             },
             "require": {
-                "petmorestore022-lgtm/pagarme-ecommerce-module-core": "dev-main",
+                "petmorestore022-lgtm/pagarme-ecommerce-module-core": "^1.0",
                 "php": ">=7.1"
             },
             "require-dev": {
@@ -20273,7 +20259,6 @@
                 "sjparkinson/static-review": "~4.1",
                 "squizlabs/php_codesniffer": "2.8.1"
             },
-            "default-branch": true,
             "type": "magento2-module",
             "autoload": {
                 "files": [
@@ -20283,11 +20268,7 @@
                     "Pagarme\\Pagarme\\": ""
                 }
             },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -20298,10 +20279,10 @@
             ],
             "description": "Magento 2 Module Pagar.me",
             "support": {
-                "source": "https://github.com/petmorestore022-lgtm/pagarme-magento2/tree/main",
-                "issues": "https://github.com/petmorestore022-lgtm/pagarme-magento2/issues"
+                "issues": "https://github.com/petmorestore022-lgtm/pagarme-magento2/issues",
+                "source": "https://github.com/petmorestore022-lgtm/pagarme-magento2/tree/1.0.3"
             },
-            "time": "2025-10-14T17:03:19+00:00"
+            "time": "2025-10-14T19:05:02+00:00"
         },
         {
             "name": "php-amqplib/php-amqplib",
@@ -30215,8 +30196,6 @@
     "stability-flags": {
         "mageplaza/magento-2-portuguese-brazilian-language-pack": 20,
         "pdepend/pdepend": 20,
-        "petmorestore022-lgtm/pagarme-ecommerce-module-core": 20,
-        "petmorestore022-lgtm/pagarme-magento2": 20,
         "phpmd/phpmd": 20
     },
     "prefer-stable": false,
