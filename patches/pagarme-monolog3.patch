@@ -1,9 +1,0 @@
---- a/composer.json
-+++ b/composer.json
-@@ -15,7 +15,7 @@
-     "require": {
--        "monolog/monolog": "<3",
-+        "monolog/monolog": "^3.6",
-         "php": ">=7.1",
-         "ext-json": "*",
-         "ext-mbstring": "*"
