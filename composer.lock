@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0835c7954307e4a541027c613e1c1e7e",
+    "content-hash": "6e608582e617fe025d98de4e63a50aec",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -85,6 +85,120 @@
             },
             "type": "metapackage",
             "description": "Metapackage contains references to extensions bundled with Magento OS"
+        },
+        {
+            "name": "apimatic/jsonmapper",
+            "version": "v1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/apimatic/jsonmapper.git",
+                "reference": "0883d385653ebd2a194ec79e66facb7d69441404"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/apimatic/jsonmapper/zipball/0883d385653ebd2a194ec79e66facb7d69441404",
+                "reference": "0883d385653ebd2a194ec79e66facb7d69441404",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5 || ^6 || ^7",
+                "squizlabs/php_codesniffer": "^3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "apimatic\\jsonmapper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Weiske",
+                    "email": "christian.weiske@netresearch.de",
+                    "homepage": "http://www.netresearch.de/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Mehdi Jaffery",
+                    "email": "mehdi.jaffery@apimatic.io",
+                    "homepage": "http://apimatic.io/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Map nested JSON structures onto PHP classes",
+            "support": {
+                "email": "mehdi.jaffery@apimatic.io",
+                "issues": "https://github.com/apimatic/jsonmapper/issues",
+                "source": "https://github.com/apimatic/jsonmapper/tree/v1.3.1"
+            },
+            "time": "2020-04-06T20:47:48+00:00"
+        },
+        {
+            "name": "apimatic/unirest-php",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/apimatic/unirest-php.git",
+                "reference": "52e226fb3b7081dc9ef64aee876142a240a5f0f9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/apimatic/unirest-php/zipball/52e226fb3b7081dc9ef64aee876142a240a5f0f9",
+                "reference": "52e226fb3b7081dc9ef64aee876142a240a5f0f9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5 || ^6 || ^7 || ^8 || ^9"
+            },
+            "suggest": {
+                "ext-json": "Allows using JSON Bodies for sending and parsing requests"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Unirest\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mashape",
+                    "email": "opensource@mashape.com",
+                    "homepage": "https://www.mashape.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "APIMATIC",
+                    "email": "opensource@apimatic.io",
+                    "homepage": "https://www.apimatic.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Unirest PHP",
+            "homepage": "https://github.com/apimatic/unirest-php",
+            "keywords": [
+                "client",
+                "curl",
+                "http",
+                "https",
+                "rest"
+            ],
+            "support": {
+                "email": "opensource@apimatic.io",
+                "issues": "https://github.com/apimatic/unirest-php/issues",
+                "source": "https://github.com/apimatic/unirest-php/tree/2.3.0"
+            },
+            "time": "2022-06-15T08:29:49+00:00"
         },
         {
             "name": "astock/stock-api-libphp",
@@ -19413,46 +19527,34 @@
             "time": "2025-08-06T08:36:44+00:00"
         },
         {
-            "name": "pagarme/pagarme-magento2-module",
-            "version": "2.7.1",
+            "name": "pagarme/pagarmecoreapi",
+            "version": "v5.6.6",
             "source": {
                 "type": "git",
-                "url": "https://github.com/pagarme/magento2.git",
-                "reference": "ed4d7f67f9360b67e599c8de78afda9ef49fc8cd"
+                "url": "https://github.com/pagarme/pagarme-core-api-php.git",
+                "reference": "908b59f26cd16c399073ce69e46fb8e97e89caa5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pagarme/magento2/zipball/ed4d7f67f9360b67e599c8de78afda9ef49fc8cd",
-                "reference": "ed4d7f67f9360b67e599c8de78afda9ef49fc8cd",
+                "url": "https://api.github.com/repos/pagarme/pagarme-core-api-php/zipball/908b59f26cd16c399073ce69e46fb8e97e89caa5",
+                "reference": "908b59f26cd16c399073ce69e46fb8e97e89caa5",
                 "shasum": ""
             },
             "require": {
-                "pagarme/ecommerce-module-core": "~2.8.0",
+                "apimatic/jsonmapper": "^1.3.1",
+                "apimatic/unirest-php": "^2.0.0",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
                 "php": ">=7.1"
             },
             "require-dev": {
-                "fabpot/php-cs-fixer": "~1.2",
-                "lusitanian/oauth": "~0.3 <=0.7.0",
-                "magento-ecg/coding-standard": "dev-master",
-                "mockery/mockery": "1.3.x-dev",
-                "pdepend/pdepend": "2.2.2",
-                "phpdocumentor/phpdocumentor": "^2.8",
-                "phpmd/phpmd": "@stable",
-                "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9",
-                "phpunit/phpunit-selenium": ">=1.2",
-                "rregeer/phpunit-coverage-check": "^0.1.3",
-                "satooshi/php-coveralls": "^1.0",
-                "sebastian/phpcpd": "^2.0",
-                "sjparkinson/static-review": "~4.1",
-                "squizlabs/php_codesniffer": "2.8.1"
+                "squizlabs/php_codesniffer": "^2.7"
             },
-            "type": "magento2-module",
+            "type": "library",
             "autoload": {
-                "files": [
-                    "registration.php"
-                ],
                 "psr-4": {
-                    "Pagarme\\Pagarme\\": ""
+                    "PagarmeCoreApiLib\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -19461,15 +19563,25 @@
             ],
             "authors": [
                 {
-                    "name": "Open Source Team"
+                    "name": "APIMatic SDK Generator",
+                    "email": "support@apimatic.io",
+                    "homepage": "https://apimatic.io",
+                    "role": "API Tool"
                 }
             ],
-            "description": "Magento 2 Module Pagar.me",
+            "description": "Pagarme API",
+            "homepage": "https://apimatic.io",
+            "keywords": [
+                "PagarmeCoreApi",
+                "api",
+                "sdk"
+            ],
             "support": {
-                "issues": "https://github.com/pagarme/magento2/issues",
-                "source": "https://github.com/pagarme/magento2/tree/2.7.1"
+                "issues": "https://github.com/pagarme/pagarme-core-api-php/issues",
+                "source": "https://github.com/pagarme/pagarme-core-api-php/tree/v5.6.6"
             },
-            "time": "2025-09-16T17:37:55+00:00"
+            "abandoned": true,
+            "time": "2024-11-12T19:38:33+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -20062,6 +20174,134 @@
                 "source": "https://github.com/MyIntervals/emogrifier"
             },
             "time": "2024-10-28T16:12:26+00:00"
+        },
+        {
+            "name": "petmorestore022-lgtm/pagarme-ecommerce-module-core",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core.git",
+                "reference": "4b868780d3508b23342f1cc2628b3531d72f3722"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/petmorestore022-lgtm/pagarme-ecommerce-module-core/zipball/4b868780d3508b23342f1cc2628b3531d72f3722",
+                "reference": "4b868780d3508b23342f1cc2628b3531d72f3722",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "monolog/monolog": "*",
+                "pagarme/pagarmecoreapi": "v5.6.6",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "ext-pdo": "*",
+                "mockery/mockery": "1.2.4",
+                "nesbot/carbon": "1.39.0",
+                "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Pagarme\\Core\\": "src",
+                    "Pagarme\\Core\\Test\\": "tests",
+                    "Pagarme\\Core\\Test\\Mock\\": "tests\\mock"
+                }
+            },
+            "scripts": {
+                "post-install-cmd": [
+                    "cp 'hooks/pre-commit' '.git/hooks/pre-commit'"
+                ],
+                "post-update-cmd": [
+                    "cp 'hooks/pre-commit' '.git/hooks/pre-commit'"
+                ],
+                "tests": [
+                    "vendor/bin/phpunit --colors=always"
+                ],
+                "tests-coverage": [
+                    "vendor/bin/phpunit --colors=always --coverage-html ./tests/report"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Open Source Team"
+                }
+            ],
+            "description": "Core component for Pagar.me e-commerce platform modules.",
+            "support": {
+                "source": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core/tree/1.0.1",
+                "issues": "https://github.com/petmorestore022-lgtm/pagarme-ecommerce-module-core/issues"
+            },
+            "time": "2025-10-14T16:50:00+00:00"
+        },
+        {
+            "name": "petmorestore022-lgtm/pagarme-magento2",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/petmorestore022-lgtm/pagarme-magento2.git",
+                "reference": "8c2ae0b4270480c1b0c5d3716166c9eda639c967"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/petmorestore022-lgtm/pagarme-magento2/zipball/8c2ae0b4270480c1b0c5d3716166c9eda639c967",
+                "reference": "8c2ae0b4270480c1b0c5d3716166c9eda639c967",
+                "shasum": ""
+            },
+            "require": {
+                "petmorestore022-lgtm/pagarme-ecommerce-module-core": "dev-main",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "~1.2",
+                "lusitanian/oauth": "~0.3 <=0.7.0",
+                "magento-ecg/coding-standard": "dev-master",
+                "mockery/mockery": "1.3.x-dev",
+                "pdepend/pdepend": "2.2.2",
+                "phpdocumentor/phpdocumentor": "^2.8",
+                "phpmd/phpmd": "@stable",
+                "phpunit/phpunit": "^5 | ^6 | ^7 | ^8 | ^9",
+                "phpunit/phpunit-selenium": ">=1.2",
+                "rregeer/phpunit-coverage-check": "^0.1.3",
+                "satooshi/php-coveralls": "^1.0",
+                "sebastian/phpcpd": "^2.0",
+                "sjparkinson/static-review": "~4.1",
+                "squizlabs/php_codesniffer": "2.8.1"
+            },
+            "default-branch": true,
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Pagarme\\Pagarme\\": ""
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Open Source Team"
+                }
+            ],
+            "description": "Magento 2 Module Pagar.me",
+            "support": {
+                "source": "https://github.com/petmorestore022-lgtm/pagarme-magento2/tree/main",
+                "issues": "https://github.com/petmorestore022-lgtm/pagarme-magento2/issues"
+            },
+            "time": "2025-10-14T17:03:19+00:00"
         },
         {
             "name": "php-amqplib/php-amqplib",
@@ -29971,13 +30211,15 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
         "mageplaza/magento-2-portuguese-brazilian-language-pack": 20,
         "pdepend/pdepend": 20,
+        "petmorestore022-lgtm/pagarme-ecommerce-module-core": 20,
+        "petmorestore022-lgtm/pagarme-magento2": 20,
         "phpmd/phpmd": 20
     },
-    "prefer-stable": true,
+    "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
