@@ -159,7 +159,6 @@ jobs:
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
             php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
             echo "Temas Frontend compilados:"
-            # ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
           EOF
 
       # 16. Finalizar Produção
@@ -226,4 +225,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
             [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
-            sudo mv ${{ vars.APP_
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+            echo "✅ Deploy concluído! Nova versão em produção."
+          EOF
