@@ -154,11 +154,12 @@ jobs:
         id: deploy_statics_for_frontend
         if: steps.deploy_statics_for_admin.outcome == 'success'
         run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=200 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
             php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
             echo "Temas Frontend compilados:"
+            # ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
           EOF
 
       # 16. Finalizar Produção
