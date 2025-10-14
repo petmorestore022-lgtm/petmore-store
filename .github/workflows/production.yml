@@ -149,7 +149,7 @@ jobs:
 
             echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
             # Deploy para adminhtml - vai compilar todos os temas admin automaticamente
-            php -d memory_limit=4G bin/magento setup:static-content:deploy --area adminhtml --force --jobs=4
+            php -d memory_limit=4G bin/magento setup:static-content:deploy --area adminhtml --force --jobs=1
 
             echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
             echo "Temas Admin compilados:"
@@ -164,7 +164,7 @@ jobs:
 
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
             # Deploy para frontend - vai compilar todos os temas frontend automaticamente
-            php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force --jobs=4
+            php -d memory_limit=4G bin/magento setup:static-content:deploy --area frontend --force --jobs=1
 
             echo "Temas Frontend compilados:"
             ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
