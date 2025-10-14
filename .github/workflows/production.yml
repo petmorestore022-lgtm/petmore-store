@@ -52,7 +52,7 @@ jobs:
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
-          composer update --with-all-dependencies
+          composer update
 
       # 6. Configurar SSH
       - name: Configurar acesso SSH
