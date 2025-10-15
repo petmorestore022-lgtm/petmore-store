@@ -41,12 +41,19 @@ jobs:
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
       # 5. Composer Install
-      - name: Run composer install if composer.json exists
-        id: composer_install
+      - name: Run compile on_ build server
+        id: run_compile_on_build_server
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
-          composer validate --no-check-publish
-          composer install --prefer-dist --no-dev --optimize-autoloader
+          php bin/magento setup:di:compile
+
+      # 5. Composer Install
+      - name:  Run compile static contents on build server
+        id: run_static_contents_compile_on_build_server
+        if: steps.run_compile_on_build_server.outcome == 'success'
+        run: |
+          php bin/magento setup:static-content:deploy -f --jobs=4
+
 
       # - name: Run composer update if composer.json exists
       #   id: composer_install
@@ -57,8 +64,9 @@ jobs:
       # 6. Configurar SSH
       - name: Configurar acesso SSH
         id: configure_ssh_on_server
-        # Note: A dependência aqui deve ser do último passo obrigatório: composer install ou config_auth_magento_composer
-        if: steps.composer_install.outcome == 'success' || (steps.check_files.outputs.files_exists == 'false' && steps.config_auth_magento_composer.outcome == 'success')
+
+        # if: steps.composer_install.outcome == 'success' || (steps.check_files.outputs.files_exists == 'false' && steps.config_auth_magento_composer.outcome == 'success')
+        if: steps.run_static_contents_compile_on_build_server.outcome == 'success' || (steps.check_files.outputs.files_exists == 'false' && steps.config_auth_magento_composer.outcome == 'success')
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
@@ -170,45 +178,43 @@ jobs:
             php -d memory_limit=2G bin/magento setup:upgrade
           EOF
 
-      - name: Compilar dependências
-        id: compile_dependecies_on_building
-        if: steps.clear_cache_enable_modules.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
+      # - name: Compilar dependências
+      #   id: compile_dependecies_on_building
+      #   if: steps.clear_cache_enable_modules.outcome == 'success'
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+      #       cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            php -d memory_limit=2G bin/magento setup:di:compile
-          EOF
+      #       php -d memory_limit=2G bin/magento setup:di:compile
+      #     EOF
 
-      # 14. Deploy Admin
-      - name: Deploy completo de conteúdo estático - admin
-        id: deploy_statics_for_admin
-        if: steps.compile_dependecies_on_building.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-            echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force -v
-            echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
-            ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
-          EOF
+      # - name: Deploy completo de conteúdo estático - admin
+      #   id: deploy_statics_for_admin
+      #   if: steps.compile_dependecies_on_building.outcome == 'success'
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+      #       cd ${{ vars.APP_COMPLETE_PATH }}/building
+      #       echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
+      #       php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force -v
+      #       echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
+      #       ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
+      #     EOF
 
-      # 15. Deploy Frontend
-      - name: Deploy completo de conteúdo estático - frontend
-        id: deploy_statics_for_frontend
-        if: steps.deploy_statics_for_admin.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
+      # - name: Deploy completo de conteúdo estático - frontend
+      #   id: deploy_statics_for_frontend
+      #   if: steps.deploy_statics_for_admin.outcome == 'success'
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+      #       cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
+      #       echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
 
-            # php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
+      #       # php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy pt_BR --area frontend --theme BzoTech/petshop --force
+      #       php -d memory_limit=2G bin/magento setup:static-content:deploy pt_BR --area frontend --theme BzoTech/petshop --force
 
-            echo "Temas Frontend compilados:"
-          EOF
+      #       echo "Temas Frontend compilados:"
+      #     EOF
 
       # 16. Finalizar Produção
       - name: Configurar modo produção e finalizar
