@@ -46,7 +46,7 @@ jobs:
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
           composer validate --no-check-publish
-          composer install --prefer-dist --no-dev --optimize-autoloader
+          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress
 
       # - name: Run composer update if composer.json exists
       #   id: composer_install
@@ -77,7 +77,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
           echo "=== removendo ${{ vars.APP_COMPLETE_PATH }}/building se existir antes de sincronizar ==="
-          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building
+          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building > /dev/null 2>&1
 
           echo "=== criando ${{ vars.APP_COMPLETE_PATH }}/building e mantendo vazio ==="
           sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
@@ -95,7 +95,8 @@ jobs:
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
-            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}/building
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}/building \
+            > /dev/null
 
       # 10. Criar env.php
       - name: Criar env.php com envsubst
@@ -172,9 +173,9 @@ jobs:
 
             rm -rf var/cache/* var/page_cache/* generated/* var/view_preprocessed/* pub/static/*
 
-            bin/magento module:enable --all --clear-static-content
+            bin/magento module:enable --all --clear-static-content > /dev/null
 
-            php -d memory_limit=2G bin/magento setup:upgrade
+            php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
 
           EOF
 
@@ -242,12 +243,6 @@ jobs:
             echo "=== Modo final ==="
             php bin/magento deploy:mode:show
 
-            if [ -f "pub/static/frontend/Magento/luma/en_US/mage/calendar.css" ]; then
-                echo "✅ calendar.css gerado com sucesso!"
-            else
-                echo "❌ calendar.css NÃO foi gerado - tentando deploy específico..."
-                php -d memory_limit=2G bin/magento setup:static-content:deploy en_US -t Magento/luma --force
-            fi
           EOF
 
       # 17. Corrigir Permissões Finais
@@ -263,22 +258,6 @@ jobs:
             sudo chmod 600 app/etc/env.php
             sudo chmod 600 app/etc/config.php
             sudo chown -R www-data:www-data .
-          EOF
-
-      # 18. Verificação Final
-      - name: Verificação final
-        id: final_checkup_deployed
-        if: steps.fixing_permissions_finished.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            echo "=== VERIFICAÇÃO FINAL ==="
-            echo "1. Modo:"
-            php bin/magento deploy:mode:show
-
-            echo "3. Calendar.css:"
-            ls -la pub/static/frontend/Magento/luma/en_US/mage/calendar.css 2>/dev/null && echo "✅ EXISTE" || echo "❌ NÃO EXISTE"
           EOF
 
       # 19. Mover para Produção
