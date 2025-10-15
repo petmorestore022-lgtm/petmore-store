@@ -263,7 +263,7 @@ jobs:
       # 19. Mover para Produção
       - name: Movendo diretório para o path final
         id: moving_directories_to_final_path
-        if: steps.final_checkup_deployed.outcome == 'success'
+        if: steps.fixing_permissions_finished.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
