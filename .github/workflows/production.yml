@@ -116,6 +116,7 @@ jobs:
             export WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE }}
             export WEB_DEFAULT_BASE_MEDIA_URL_SECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_SECURE }}
             export REMOTE_STORAGE_CONFIG_PREFIX=${{ vars.REMOTE_STORAGE_CONFIG_PREFIX }}
+            export SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS=${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}
             export CRYPT_KEY=${{ secrets.CRYPT_KEY }}
 
             export REMOTE_STORAGE_DRIVER=${{ secrets.REMOTE_STORAGE_DRIVER }}
@@ -207,13 +208,15 @@ jobs:
           EOF
 
 
-      - name: 2. Pausa de 50 segundos para build de  estaticos
-        run: sleep 50s
+      - name: 2. Pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
+        if: steps.deploy_statics_for_frontend.outcome == 'success'
+        id: long_sleep_until_generate_static_content_forntend
+        run: sleep ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}s
 
       # 16. Finalizar Produção
       - name: Configurar modo produção e finalizar
         id: configure_production_module_and_finish
-        if: steps.deploy_statics_for_frontend.outcome == 'success'
+        if: steps.long_sleep_until_generate_static_content_forntend.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
