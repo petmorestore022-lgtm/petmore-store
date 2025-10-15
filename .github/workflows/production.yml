@@ -49,6 +49,12 @@ jobs:
           composer install --prefer-dist --no-dev --optimize-autoloader
 
       # 5. Composer Install
+      - name: Run enable all magento app on build server
+        id: run_enable_all_on_build_server
+        if: steps.composer_install.outcome == 'success'
+        run: |
+          bin/magento module:enable --all --clear-static-content
+
       - name: Run compile magento app on build server
         id: run_compile_on_build_server
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
