@@ -40,6 +40,14 @@ jobs:
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
+      # 4. Configurar autenticação Composer
+      - name: Run composer install if composer.json exists
+        id: composer_install
+        if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+        run: |
+          composer validate --no-check-publish
+          composer install --prefer-dist --no-dev --optimize-autoloader
+
       # 5. Composer Install
       - name: Run compile on_ build server
         id: run_compile_on_build_server
