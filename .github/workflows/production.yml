@@ -76,7 +76,13 @@ jobs:
         if: steps.test_connection_ssh.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+          echo "=== removendo ${{ vars.APP_COMPLETE_PATH }}/building se existir antes de sincronizar ==="
+          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building
+
+          echo "=== criando ${{ vars.APP_COMPLETE_PATH }}/building e mantendo vazio ==="
           sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
+
+          echo "=== chwon em ${{ vars.APP_COMPLETE_PATH }}/building para usuario do build ==="
           sudo chown -R ${{ secrets.MAGALU_USER }}:${{ secrets.MAGALU_USER }} ${{ vars.APP_COMPLETE_PATH }}/building
           EOF
 
@@ -85,9 +91,6 @@ jobs:
         id: copy_file_remote_application
         if: steps.create_path_application.outcome == 'success'
         run: |
-          echo "=== removendo ${{ vars.APP_COMPLETE_PATH }}/building se existir antes de sincronizar ==="
-          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building
-
           echo "=== executar rsyc no servidor no path temporario de building ==="
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
