@@ -49,14 +49,14 @@ jobs:
           composer install --prefer-dist --no-dev --optimize-autoloader
 
       # 5. Composer Install
-      - name: Run compile on_ build server
+      - name: Run compile magento app on build server
         id: run_compile_on_build_server
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
           php bin/magento setup:di:compile
 
       # 5. Composer Install
-      - name:  Run compile static contents on build server
+      - name:  Run compile magento static contents on build server
         id: run_static_contents_compile_on_build_server
         if: steps.run_compile_on_build_server.outcome == 'success'
         run: |
