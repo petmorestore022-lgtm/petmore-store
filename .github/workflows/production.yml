@@ -85,6 +85,10 @@ jobs:
         id: copy_file_remote_application
         if: steps.create_path_application.outcome == 'success'
         run: |
+          echo "=== removendo ${{ vars.APP_COMPLETE_PATH }}/building se existir antes de sincronizar ==="
+          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building
+
+          echo "=== executar rsyc no servidor no path temporario de building ==="
           rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             ./ \
