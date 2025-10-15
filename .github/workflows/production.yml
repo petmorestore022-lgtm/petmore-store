@@ -255,8 +255,10 @@ jobs:
 
             sudo find . -type f -exec chmod 644 {} \;
             sudo find . -type d -exec chmod 755 {} \;
+
             sudo chmod 600 app/etc/env.php
             sudo chmod 600 app/etc/config.php
+
             sudo chown -R www-data:www-data .
           EOF
 
