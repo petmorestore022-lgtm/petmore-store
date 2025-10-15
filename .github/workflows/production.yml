@@ -195,7 +195,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
 
-            sudo php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2
 
             echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
             ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
@@ -203,7 +203,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
 
-            sudo php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2
 
             echo "Temas Frontend compilados:"
 
