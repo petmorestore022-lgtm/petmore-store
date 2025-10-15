@@ -119,6 +119,11 @@ class Reader
                 if (!$definitionsCollection->hasInstance($preference)) {
                     // See 'excludePatterns' in Magento\Setup\Module\Di\Code\Reader\ClassesScanner,
                     // populated via Magento\Setup\Console\Command\DiCompileCommand
+
+                    //@TODO
+                    // devido a uma incompatibilidade ao Pagarme onde tive que fazer um fork, este continue deve ser TEMPORARIO
+                    continue;
+
                     throw new LocalizedException(new Phrase(
                         'Preference declared for "%instanceName" as "%preference", but the latter'
                             . ' has not been included in dependency injection compilation.',
