@@ -138,7 +138,6 @@ jobs:
             envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
           EOF
 
-      # 11. Configurar permissões iniciais
       - name: Configurar permissões iniciais
         id: configure_permission_for_vendors
         if: steps.create_env_with_envsubst.outcome == 'success'
