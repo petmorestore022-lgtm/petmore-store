@@ -168,6 +168,9 @@ jobs:
             bin/magento module:enable --all --clear-static-content
 
             php -d memory_limit=2G bin/magento setup:upgrade
+
+            php bin/magento deploy:mode:set production
+
           EOF
 
       - name: Compilar dependências
@@ -220,7 +223,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
-            php bin/magento deploy:mode:set production
             php bin/magento indexer:reindex
             php bin/magento cron:install --non-optional
             php bin/magento cache:clean
