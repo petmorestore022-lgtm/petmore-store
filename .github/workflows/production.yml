@@ -169,6 +169,8 @@ jobs:
 
             php -d memory_limit=2G bin/magento setup:upgrade
 
+            echo "=== Habilitando modo production ==="
+
             php bin/magento deploy:mode:set production
 
           EOF
@@ -185,40 +187,34 @@ jobs:
           EOF
 
       # 14. Deploy Admin
-      - name: Deploy completo de conteúdo estático - admin
-        id: deploy_statics_for_admin
+      - name: Deploy completo de conteúdo estático e pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
+        id: deploy_statics_for_all
         if: steps.compile_dependecies_on_building.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 4
+
+            sudo php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2
+
             echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
             ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
-          EOF
 
-      # 15. Deploy Frontend
-      - name: Deploy completo de conteúdo estático - frontend
-        id: deploy_statics_for_frontend
-        if: steps.deploy_statics_for_admin.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 4
+
+            sudo php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2
+
             echo "Temas Frontend compilados:"
+
+            sleep ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}s
+
           EOF
 
-
-      - name: 2. Pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
-        if: steps.deploy_statics_for_frontend.outcome == 'success'
-        id: long_sleep_until_generate_static_content_forntend
-        run: sleep ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}s
-
-      # 16. Finalizar Produção
+       # 16. Finalizar Produção
       - name: Configurar modo produção e finalizar
         id: configure_production_module_and_finish
-        if: steps.long_sleep_until_generate_static_content_forntend.outcome == 'success'
+        if: steps.deploy_statics_for_all.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
