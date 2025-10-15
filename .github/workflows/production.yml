@@ -169,10 +169,6 @@ jobs:
 
             php -d memory_limit=2G bin/magento setup:upgrade
 
-            echo "=== Habilitando modo production ==="
-
-            # php bin/magento deploy:mode:set production
-
           EOF
 
       - name: Compilar dependências
@@ -181,15 +177,27 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== Iniciando comando DI Compile ==="
 
-            php -d memory_limit=2G bin/magento setup:di:compile
+            php -d memory_limit=3G bin/magento setup:di:compile
 
+          EOF
+
+      - name: Ativar modo production antes do deploy de conteúdo estático
+        id: set_production_mode_before_static_deploy
+        if: steps.compile_dependecies_on_building.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== Ativando modo PRODUCTION ==="
+            php bin/magento deploy:mode:set production --skip-compilation
+            php bin/magento deploy:mode:show
           EOF
 
       # 14. Deploy Admin
       - name: Deploy completo de conteúdo estático e pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
         id: deploy_statics_for_all
-        if: steps.compile_dependecies_on_building.outcome == 'success'
+        if: steps.set_production_mode_before_static_deploy.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
