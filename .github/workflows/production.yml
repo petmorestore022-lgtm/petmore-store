@@ -11,12 +11,10 @@ jobs:
     environment: production
     steps:
 
-      # 1. Checkout
       - name: Checkout repositório
         id: checkout_repo
         uses: actions/checkout@v4
 
-      # 2. Setup PHP
       - name: Setup PHP
         id: setup_php
         if: steps.checkout_repo.outcome == 'success'
@@ -25,7 +23,6 @@ jobs:
           php-version: '8.3'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, curl, zip, soap, bcmath, json
 
-      # 3. Check composer.json
       - name: Check if composer.json exists
         id: check_files
         if: steps.setup_php.outcome == 'success'
@@ -33,14 +30,12 @@ jobs:
         with:
           files: 'composer.json'
 
-      # 4. Configurar autenticação Composer
       - name: Configurar autenticação Magento no Composer
         id: config_auth_magento_composer
         if: steps.check_files.outcome == 'success'
         run: |
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
-      # 5. Composer Install
       - name: Run composer install if composer.json exists
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
@@ -54,7 +49,6 @@ jobs:
       #   run: |
       #     composer update
 
-      # 6. Configurar SSH
       - name: Configurar acesso SSH
         id: configure_ssh_on_server
         # Note: A dependência aqui deve ser do último passo obrigatório: composer install ou config_auth_magento_composer
@@ -63,14 +57,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
 
-      # 7. Testar conexão
       - name: Testar conexão
         id: test_connection_ssh
         if: steps.configure_ssh_on_server.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} "echo ✅ Conectado com sucesso"
 
-      # 8. Criar path
       - name: Criar path da aplicação e dar permissão
         id: create_path_application
         if: steps.test_connection_ssh.outcome == 'success'
@@ -86,7 +78,6 @@ jobs:
           sudo chown -R ${{ secrets.MAGALU_USER }}:${{ secrets.MAGALU_USER }} ${{ vars.APP_COMPLETE_PATH }}/building
           EOF
 
-      # 9. Copiar arquivos
       - name: Copiar arquivos para VM
         id: copy_file_remote_application
         if: steps.create_path_application.outcome == 'success'
@@ -98,7 +89,6 @@ jobs:
             ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}/building \
             > /dev/null
 
-      # 10. Criar env.php
       - name: Criar env.php com envsubst
         id: create_env_with_envsubst
         if: steps.copy_file_remote_application.outcome == 'success'
@@ -163,7 +153,6 @@ jobs:
             sudo chmod u+x bin/magento
           EOF
 
-      # 12. Limpar cache e upgrade
       - name: Limpar cache e habilitar módulos
         id: clear_cache_enable_modules
         if: steps.configure_permission_for_vendors.outcome == 'success'
@@ -202,7 +191,6 @@ jobs:
             php bin/magento deploy:mode:show
           EOF
 
-      # 14. Deploy Admin
       - name: Deploy completo de conteúdo estático e pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
         id: deploy_statics_for_all
         if: steps.set_production_mode_before_static_deploy.outcome == 'success'
@@ -227,7 +215,6 @@ jobs:
 
           EOF
 
-       # 16. Finalizar Produção
       - name: Configurar modo produção e finalizar
         id: configure_production_module_and_finish
         if: steps.deploy_statics_for_all.outcome == 'success'
@@ -245,7 +232,6 @@ jobs:
 
           EOF
 
-      # 17. Corrigir Permissões Finais
       - name: Corrigir permissões finais
         id: fixing_permissions_finished
         if: steps.configure_production_module_and_finish.outcome == 'success'
@@ -262,7 +248,6 @@ jobs:
             sudo chown -R www-data:www-data .
           EOF
 
-      # 19. Mover para Produção
       - name: Movendo diretório para o path final
         id: moving_directories_to_final_path
         if: steps.fixing_permissions_finished.outcome == 'success'
