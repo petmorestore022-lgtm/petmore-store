@@ -166,7 +166,8 @@ jobs:
 
             bin/magento module:enable --all --clear-static-content > /dev/null
 
-            php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
+            # php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
+            php -d memory_limit=2G bin/magento setup:upgrade
 
           EOF
 
