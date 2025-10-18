@@ -33,6 +33,14 @@
                    template="BzoTech_Petshop::html/header.phtml"
                    before="-">
 
+                <referenceBlock name="currency" after="store_language"/>
+
+                <referenceBlock name="logo" before="currency"/>
+
+                <referenceBlock name="top.search" after="logo"/>
+
+                <referenceBlock name="minicart" after="top.search"/>
+
                 <block class="Magento\Theme\Block\Html\Header" name="welcome-customer" as="welcome-customer"
                        template="BzoTech_Petshop::html/customer.phtml">
                     <arguments>
@@ -54,6 +62,9 @@
 
                 <block class="Magento\Framework\View\Element\Template" name="compare_header"
                        template="Magento_Catalog::product/compare/link.phtml">
+
+                <block class="Magento\Directory\Block\Currency" name="currency" template="directory/currency.phtml" after="store_language"/>
+
                     <arguments>
                         <argument name="jsLayout" xsi:type="array">
                             <item name="components" xsi:type="array">
@@ -78,12 +89,12 @@
             </container>
         </referenceContainer>
 
-        <move element="currency" destination="theme_header"/>
+        <!-- <move element="currency" destination="theme_header"/>
         <move element="logo" destination="theme_header"/>
         <move element="catalog.topnav" destination="theme_header"/>
         <move element="catalog.compare.link" destination="theme_header" before="-"/>
         <move element="top.search" destination="theme_header"/>
-        <move element="minicart" destination="theme_header"/>
+        <move element="minicart" destination="theme_header"/> -->
 
         <move element="page.main.title" destination="title.breadcrumbs" before="-"/>
         <move element="breadcrumbs" destination="title.breadcrumbs" after="page.main.title"/>
