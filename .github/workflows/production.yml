@@ -181,7 +181,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== Iniciando comando DI Compile ==="
 
-            php -d memory_limit=3G bin/magento setup:di:compile
+            php -d memory_limit=2G bin/magento setup:di:compile
 
           EOF
 
