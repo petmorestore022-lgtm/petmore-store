@@ -8,3 +8,17 @@ We strongly encourage you to report all security issues privately via our [bug b
 
 ## Learning More About Security
 To learn more about securing a Magento store, please visit the [Security Center](https://magento.com/security).
+
+## Commands
+
+php -d memory_limit=4G bin/magento maintenance:enable && \
+php -d memory_limit=4G bin/magento cache:clean && \
+php -d memory_limit=4G bin/magento cache:flush && \
+find var generated vendor pub/static pub/media app/etc -type f -exec chmod 664 {} \; && \
+find var generated vendor pub/static pub/media app/etc -type d -exec chmod 775 {} \; && \
+php -d memory_limit=4G bin/magento setup:upgrade && \
+php -d memory_limit=4G bin/magento setup:di:compile && \
+php -d memory_limit=4G bin/magento setup:static-content:deploy -f pt_BR en_US && \
+php -d memory_limit=4G bin/magento cache:clean && \
+php -d memory_limit=4G bin/magento cache:flush && \
+php -d memory_limit=4G bin/magento maintenance:disable
