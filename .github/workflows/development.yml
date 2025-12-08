@@ -1,0 +1,265 @@
+name: Petmore Store - Produção (Sequência Explícita)
+
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+
+      - name: Checkout repositório
+        id: checkout_repo
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        id: setup_php
+        if: steps.checkout_repo.outcome == 'success'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_mysql, gd, curl, zip, soap, bcmath, json
+
+      - name: Check if composer.json exists
+        id: check_files
+        if: steps.setup_php.outcome == 'success'
+        uses: andstor/file-existence-action@v1
+        with:
+          files: 'composer.json'
+
+      - name: Configurar autenticação Magento no Composer
+        id: config_auth_magento_composer
+        if: steps.check_files.outcome == 'success'
+        run: |
+          composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+
+      - name: Run composer install if composer.json exists
+        id: composer_install
+        if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+        run: |
+          composer validate --no-check-publish
+          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --quiet
+
+      # - name: Run composer update if composer.json exists
+      #   id: composer_install
+      #   if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+      #   run: |
+      #     composer update
+
+      - name: Configurar acesso SSH
+        id: configure_ssh_on_server
+        # Note: A dependência aqui deve ser do último passo obrigatório: composer install ou config_auth_magento_composer
+        if: steps.composer_install.outcome == 'success' || (steps.check_files.outputs.files_exists == 'false' && steps.config_auth_magento_composer.outcome == 'success')
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_PRIVATE_SSH_KEY }}
+
+      - name: Testar conexão
+        id: test_connection_ssh
+        if: steps.configure_ssh_on_server.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} "echo ✅ Conectado com sucesso"
+
+      - name: Criar path da aplicação e dar permissão
+        id: create_path_application
+        if: steps.test_connection_ssh.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+          echo "=== removendo ${{ vars.APP_COMPLETE_PATH }}/building se existir antes de sincronizar ==="
+          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building > /dev/null 2>&1
+
+          echo "=== criando ${{ vars.APP_COMPLETE_PATH }}/building e mantendo vazio ==="
+          sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
+
+          echo "=== chwon em ${{ vars.APP_COMPLETE_PATH }}/building para usuario do build ==="
+          sudo chown -R ${{ secrets.MAGALU_USER }}:${{ secrets.MAGALU_USER }} ${{ vars.APP_COMPLETE_PATH }}/building
+          EOF
+
+      - name: Copiar arquivos para VM
+        id: copy_file_remote_application
+        if: steps.create_path_application.outcome == 'success'
+        run: |
+          echo "=== executar rsyc no servidor no path temporario de building ==="
+          rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            ./ \
+            ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }}:${{ vars.APP_COMPLETE_PATH }}/building \
+            > /dev/null
+
+      - name: Criar env.php com envsubst
+        id: create_env_with_envsubst
+        if: steps.copy_file_remote_application.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            export REMOTE_STORAGE_DRIVER=${{ secrets.REMOTE_STORAGE_DRIVER }}
+            export BACKEND_FRONTNAME=${{ secrets.BACKEND_FRONTNAME }}
+            export CACHE_GRAPHQL_ID_SALT=${{ secrets.CACHE_GRAPHQL_ID_SALT }}
+            export CACHE_FRONTEND_DEFAULT_ID_PREFIX=${{ secrets.CACHE_FRONTEND_DEFAULT_ID_PREFIX }}
+            export CACHE_PAGE_CACHE_ID_PREFIX=${{ secrets.CACHE_PAGE_CACHE_ID_PREFIX }}
+            export CONNECTION_DEFAULT_HOST=${{ secrets.CONNECTION_DEFAULT_HOST }}
+            export CONNECTION_DEFAULT_PORT=${{ secrets.CONNECTION_DEFAULT_PORT }}
+            export CONNECTION_DEFAULT_DB_NAME=${{ secrets.CONNECTION_DEFAULT_DB_NAME }}
+            export CONNECTION_DEFAULT_USERNAME=${{ secrets.CONNECTION_DEFAULT_USERNAME }}
+            export CONNECTION_DEFAULT_PASSWORD=${{ secrets.CONNECTION_DEFAULT_PASSWORD }}
+            export CONNECTION_DEFAULT_DB_NAME_VARIABLE=${{ vars.CONNECTION_DEFAULT_DB_NAME_VARIABLE }}
+
+            export DOWNLOADABLE_DOMAINS=${{ vars.DOWNLOADABLE_DOMAINS }}
+            export CATALOG_SEARCH_ENGINE=${{ secrets.CATALOG_SEARCH_ENGINE }}
+            export CATALOG_SEARCH_SERVER_HOSTNAME=${{ secrets.CATALOG_SEARCH_SERVER_HOSTNAME }}
+            export CATALOG_SEARCH_SERVER_PORT=${{ secrets.CATALOG_SEARCH_SERVER_PORT }}
+            export CATALOG_SEARCH_INDEX_PREFIX=${{ secrets.CATALOG_SEARCH_INDEX_PREFIX }}
+            export CATALOG_SEARCH_SERVER_TIMEOUT=${{ secrets.CATALOG_SEARCH_SERVER_TIMEOUT }}
+            export CATALOG_SEARCH_USERNAME=${{ secrets.CATALOG_SEARCH_USERNAME }}
+            export CATALOG_SEARCH_PASSWORD=${{ secrets.CATALOG_SEARCH_PASSWORD }}
+            export CATALOG_SEARCH_IS_ENABLE=${{ vars.CATALOG_SEARCH_IS_ENABLE }}
+            export WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_UNSECURE }}
+            export WEB_DEFAULT_BASE_MEDIA_URL_SECURE=${{ vars.WEB_DEFAULT_BASE_MEDIA_URL_SECURE }}
+            export REMOTE_STORAGE_CONFIG_PREFIX=${{ vars.REMOTE_STORAGE_CONFIG_PREFIX }}
+            export SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS=${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}
+            export CRYPT_KEY=${{ secrets.CRYPT_KEY }}
+
+            export REMOTE_STORAGE_DRIVER=${{ secrets.REMOTE_STORAGE_DRIVER }}
+            export REMOTE_STORAGE_CONFIG_BUCKET=${{ secrets.REMOTE_STORAGE_CONFIG_BUCKET }}
+            export REMOTE_STORAGE_CONFIG_REGION=${{ secrets.REMOTE_STORAGE_CONFIG_REGION }}
+            export REMOTE_STORAGE_CONFIG_USE_ENDPOINT=${{ secrets.REMOTE_STORAGE_CONFIG_USE_ENDPOINT }}
+            export REMOTE_STORAGE_CONFIG_KEY=${{ secrets.REMOTE_STORAGE_CONFIG_KEY }}
+            export REMOTE_STORAGE_CONFIG_BUCKET_PRIVATE=${{ secrets.REMOTE_STORAGE_CONFIG_BUCKET_PRIVATE }}
+            export REMOTE_STORAGE_CONFIG_KEY_PRIVATE=${{ secrets.REMOTE_STORAGE_CONFIG_KEY_PRIVATE }}
+            export REMOTE_STORAGE_CONFIG_SECRET_PRIVATE=${{ secrets.REMOTE_STORAGE_CONFIG_SECRET_PRIVATE }}
+            export REMOTE_STORAGE_CONFIG_SECRET=${{ secrets.REMOTE_STORAGE_CONFIG_SECRET }}
+            export REMOTE_STORAGE_CONFIG_ENDPOINT=${{ secrets.REMOTE_STORAGE_CONFIG_ENDPOINT }}
+            export REMOTE_STORAGE_CONFIG_USE_PATH_STYLE=${{ secrets.REMOTE_STORAGE_CONFIG_USE_PATH_STYLE }}
+            export REMOTE_STORAGE_CONFIG_USE_URL=${{ secrets.REMOTE_STORAGE_CONFIG_USE_URL }}
+            export REMOTE_STORAGE_CONFIG_THROW=${{ secrets.REMOTE_STORAGE_CONFIG_THROW }}
+            export REMOTE_STORAGE_CONFIG_HTTP_HTTP_CONNECT_TIMEOUT=${{ secrets.REMOTE_STORAGE_CONFIG_HTTP_HTTP_CONNECT_TIMEOUT }}
+            export REMOTE_STORAGE_CONFIG_HTTP_TIMEOUT=${{ secrets.REMOTE_STORAGE_CONFIG_HTTP_TIMEOUT }}
+
+            envsubst < ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php.template > ${{ vars.APP_COMPLETE_PATH }}/building/app/etc/env.php
+          EOF
+
+      - name: Configurar permissões iniciais
+        id: configure_permission_for_vendors
+        if: steps.create_env_with_envsubst.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            # Configurar permissões corretas
+            sudo chmod -R g+w vendor/
+            sudo find vendor -type d -exec chmod g+ws {} \;
+
+            sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
+            sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
+
+            sudo chmod u+x bin/magento
+          EOF
+
+      - name: Limpar cache e habilitar módulos
+        id: clear_cache_enable_modules
+        if: steps.configure_permission_for_vendors.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            rm -rf var/cache/* var/page_cache/* generated/* var/view_preprocessed/* pub/static/*
+
+            bin/magento module:enable --all --clear-static-content > /dev/null
+
+            # php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
+            php -d memory_limit=2G bin/magento setup:upgrade
+
+          EOF
+
+      - name: Compilar dependências
+        id: compile_dependecies_on_building
+        if: steps.clear_cache_enable_modules.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== Iniciando comando DI Compile ==="
+
+            php -d memory_limit=4G bin/magento setup:di:compile
+
+          EOF
+
+      - name: Ativar modo production antes do deploy de conteúdo estático
+        id: set_production_mode_before_static_deploy
+        if: steps.compile_dependecies_on_building.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== Ativando modo PRODUCTION ==="
+            php bin/magento deploy:mode:set production --skip-compilation
+            php bin/magento deploy:mode:show
+          EOF
+
+      - name: Deploy completo de conteúdo estático e pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
+        id: deploy_statics_for_all
+        if: steps.set_production_mode_before_static_deploy.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2
+
+            echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
+            ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
+
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2
+
+            echo "Temas Frontend compilados:"
+
+            sleep ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}s
+
+          EOF
+
+      - name: Configurar modo produção e finalizar
+        id: configure_production_module_and_finish
+        if: steps.deploy_statics_for_all.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            php bin/magento indexer:reindex
+            php bin/magento cron:install --non-optional
+            php bin/magento cache:clean
+            php bin/magento cache:flush
+
+            echo "=== Modo final ==="
+            php bin/magento deploy:mode:show
+
+          EOF
+
+      - name: Corrigir permissões finais
+        id: fixing_permissions_finished
+        if: steps.configure_production_module_and_finish.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+
+            sudo find . -type f -exec chmod 644 {} \;
+            sudo find . -type d -exec chmod 755 {} \;
+
+            sudo chmod 600 app/etc/env.php
+            sudo chmod 600 app/etc/config.php
+
+            sudo chown -R www-data:www-data .
+          EOF
+
+      - name: Movendo diretório para o path final
+        id: moving_directories_to_final_path
+        if: steps.fixing_permissions_finished.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
+            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+            echo "✅ Deploy concluído! Nova versão em produção."
+          EOF
