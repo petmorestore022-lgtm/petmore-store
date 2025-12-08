@@ -23,6 +23,10 @@ class Topmenu extends \Magento\Theme\Block\Html\Topmenu
      */
     public function getContent($value = '')
     {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
         $objectManager  = \Magento\Framework\App\ObjectManager::getInstance();
         $filterProvider = $objectManager->create('\Magento\Cms\Model\Template\FilterProvider');
 
