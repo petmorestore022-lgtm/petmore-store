@@ -185,3 +185,5 @@ Icon?
 
 # Keep empty directories
 !.gitkeep
+
+.env

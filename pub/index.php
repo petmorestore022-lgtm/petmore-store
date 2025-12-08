@@ -6,6 +6,13 @@
  * See COPYING.txt for license details.
  */
 
+ini_set(
+
+
+
+
+    'display_errors', 'On');
+
 use Magento\Framework\App\Bootstrap;
 
 try {
