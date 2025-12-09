@@ -1,0 +1,29 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: magento_app
+    environment:
+      - PHP_MEMORY_LIMIT=2G
+      - PHP_MAX_EXECUTION_TIME=1800
+      - PHP_FPM_PM_MAX_CHILDREN=50
+      - PHP_FPM_PM_START_SERVERS=10
+      - PHP_FPM_PM_MIN_SPARE_SERVERS=5
+      - PHP_FPM_PM_MAX_SPARE_SERVERS=15
+      - PHP_FPM_PM_MAX_REQUESTS=500
+    ports:
+      - "9000:9000"
+      - "80:80"
+    volumes:
+      - .:/var/www/html:cached
+      - ./docker/nginx/nginx.conf:/etc/nginx/sites-available/default
+    working_dir: /var/www/html
+    networks:
+      - magento
+    command: php-fpm
+    extra_hosts:
+      - host.docker.internal:${DOCKER_LOCAL_HOST}
+networks:
+  magento:
+    driver: bridge
