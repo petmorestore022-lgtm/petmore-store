@@ -151,9 +151,7 @@ Icon?
 /app/design/adminhtml/*/*/web/css/source/_module.less
 /app/design/adminhtml/*/*/web/css/source/_variables.less
 
-# Magento 2 enterprise specific (if using EE)
-/.github/
-/.gitlab/
+
 
 # SSL certificates (never commit these)
 /*.crt
