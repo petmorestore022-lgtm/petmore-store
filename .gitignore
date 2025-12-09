@@ -2,7 +2,8 @@
 /app/etc/env.php
 /app/etc/config.php
 /var/
-/generated/
+/generated/*
+!/generated/.htaccess
 /pub/static/
 /pub/media/
 /update/
