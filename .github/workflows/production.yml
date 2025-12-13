@@ -180,7 +180,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== Iniciando comando DI Compile ==="
 
-            php -d memory_limit=-1 bin/magento setup:di:compile-multi-tenant --ansi --no-interaction
+            php -d memory_limit=-1 bin/magento setup:di:compile --serial --ansi --no-interaction
 
           EOF
 
