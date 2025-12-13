@@ -1,4 +1,4 @@
-name: Petmore Store - Produção (Sequência Explícita)
+name: Petmore Store - Desenvolvimento (Sequência Explícita)
 
 on:
   push:
@@ -168,8 +168,7 @@ jobs:
 
             bin/magento module:enable --all --clear-static-content > /dev/null
 
-            # php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
-            php -d memory_limit=2G bin/magento setup:upgrade
+            php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
 
           EOF
 
@@ -181,7 +180,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== Iniciando comando DI Compile ==="
 
-            php -d memory_limit=4G bin/magento setup:di:compile --ansi --no-interaction
+            php -d memory_limit=2G -d max_execution_time=3900 -d opcache.enable=1 -d opcache.memory_consumption=228 -d opcache.interned_strings_buffer=16 bin/magento setup:di:compile
 
           EOF
 
@@ -204,7 +203,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2  > /dev/null
 
             echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
             ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
@@ -212,7 +211,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2  > /dev/null
 
             echo "Temas Frontend compilados:"
 
@@ -258,8 +257,7 @@ jobs:
         if: steps.fixing_permissions_finished.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
-            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
+            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
             sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
-            echo "✅ Deploy concluído! Nova versão em produção."
+            echo "✅ Deploy concluído! Nova versão no ambiente."
           EOF
