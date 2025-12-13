@@ -180,7 +180,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== Iniciando comando DI Compile ==="
 
-            php -d memory_limit=2G -d opcache.enable=1 -d opcache.memory_consumption=228 -d opcache.interned_strings_buffer=16 bin/magento setup:di:compile  --jobs 3
+            php -d memory_limit=2G -d max_execution_time=3900 -d opcache.enable=1 -d opcache.memory_consumption=228 -d opcache.interned_strings_buffer=16 bin/magento setup:di:compile
 
           EOF
 
