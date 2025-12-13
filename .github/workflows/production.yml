@@ -252,13 +252,12 @@ jobs:
             sudo chown -R www-data:www-data .
           EOF
 
-      - name: Movendo diretório para o path final
-        id: moving_directories_to_final_path
-        if: steps.fixing_permissions_finished.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
-            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo mv ${{ vars.APP_COMPLETE_PATH }}/current ${{ vars.APP_COMPLETE_PATH }}/last-version
-            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
-            echo "✅ Deploy concluído! Nova versão em produção."
-          EOF
+    name: Movendo diretório para o path final
+    id: moving_directories_to_final_path
+    if: steps.fixing_permissions_finished.outcome == 'success'
+    run: |
+      ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+        [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
+        sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+        echo "✅ Deploy concluído! Nova versão em produção."
+      EOF
