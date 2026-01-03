@@ -43,15 +43,15 @@ jobs:
           composer validate --no-check-publish
           composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --quiet
 
-      # - name: Run composer update if composer.json exists
-      #   id: composer_install
-      #   if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
-      #   run: |
-      #     composer update
+      - name: Remove .git path
+        id: remove_git_path
+        if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+        run: |
+          rm -rf .git
+          echo "Diretório .git removido com sucesso."
 
       - name: Configurar acesso SSH
         id: configure_ssh_on_server
-        # Note: A dependência aqui deve ser do último passo obrigatório: composer install ou config_auth_magento_composer
         if: steps.composer_install.outcome == 'success' || (steps.check_files.outputs.files_exists == 'false' && steps.config_auth_magento_composer.outcome == 'success')
         uses: webfactory/ssh-agent@v0.9.0
         with:
