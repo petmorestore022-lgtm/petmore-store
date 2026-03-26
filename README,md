@@ -4,3 +4,7 @@
 
 ### 2 docker compose up
     docker compose up
+
+### 3 import Dump
+
+    get dump file slim and import to mysql container
