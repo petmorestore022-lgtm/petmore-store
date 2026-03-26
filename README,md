@@ -1,0 +1,6 @@
+## SETUP
+### 1 - copy env.php to docker compose
+    cp app/etc/env.php.local app/etc/env.php
+
+### 2 docker compose up
+    docker compose up
