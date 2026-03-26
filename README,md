@@ -5,6 +5,6 @@
 ### 2 docker compose up
     docker compose up
 
-### 3 import Dump
+### 3 import Dump in docker/mysql/*tar.gz
 
     get dump file slim and import to mysql container
