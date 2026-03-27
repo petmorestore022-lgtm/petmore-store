@@ -10,7 +10,7 @@
 
 ### 3 import Dump in docker/mysql/*tar.gz
 
-    get dump file slim and import to mysql container
+    get dump file slim and import dump to mysql container
 
 ### 4 access
 
