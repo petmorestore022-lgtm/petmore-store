@@ -170,7 +170,7 @@ jobs:
             bin/magento module:enable --all --clear-static-content > /dev/null
 
             # php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
-            php -d memory_limit=2G bin/magento setup:upgrade
+            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
 
           EOF
 
@@ -197,29 +197,6 @@ jobs:
             php bin/magento deploy:mode:show
           EOF
 
-      # - name: Deploy completo de conteúdo estático e pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
-      #   id: deploy_statics_for_all
-      #   if: steps.set_production_mode_before_static_deploy.outcome == 'success'
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-      #       cd ${{ vars.APP_COMPLETE_PATH }}/building
-      #       echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
-
-      #       php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2
-
-      #       echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
-      #       ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
-
-      #       cd ${{ vars.APP_COMPLETE_PATH }}/building
-      #       echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
-
-      #       php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2
-
-      #       echo "Temas Frontend compilados:"
-
-      #       sleep ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}s
-
-      #     EOF
       - name: Deploy completo de conteúdo estático (PARENT + CHILD explícito)
         id: deploy_statics_for_all
         if: steps.set_production_mode_before_static_deploy.outcome == 'success'
