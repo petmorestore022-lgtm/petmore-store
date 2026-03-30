@@ -265,5 +265,5 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
             sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
-            echo "✅ Deploy concluído! Nova versão no ambiente."
+            echo "✅ Deploy concluído! Nova versão no desenvolvimento."
           EOF
