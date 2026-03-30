@@ -213,11 +213,11 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop --force --jobs 2
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop --force 
 
             echo "=== agora compilarei subtema petshop_child ==="
             
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop_child --force --jobs 2
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop_child --force 
 
             echo "Temas Frontend compilados:"
 
