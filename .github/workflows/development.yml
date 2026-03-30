@@ -1,4 +1,4 @@
-name: Petmore Store - Desenvolvimento (Sequência Explícita).
+name: Petmore Store - Desenvolvimento (Sequência Explícita)
 
 on:
   push:
@@ -52,7 +52,6 @@ jobs:
 
       - name: Configurar acesso SSH
         id: configure_ssh_on_server
-        # Note: A dependência aqui deve ser do último passo obrigatório: composer install ou config_auth_magento_composer
         if: steps.composer_install.outcome == 'success' || (steps.check_files.outputs.files_exists == 'false' && steps.config_auth_magento_composer.outcome == 'success')
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -69,10 +68,9 @@ jobs:
         if: steps.test_connection_ssh.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-          
           echo "=== removendo ${{ vars.APP_COMPLETE_PATH }}/building se existir antes de sincronizar ==="
-          sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/building 2>/dev/null || true
-          
+          rm -rf ${{ vars.APP_COMPLETE_PATH }}/building > /dev/null 2>&1
+
           echo "=== criando ${{ vars.APP_COMPLETE_PATH }}/building e mantendo vazio ==="
           sudo mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
 
@@ -170,8 +168,7 @@ jobs:
 
             bin/magento module:enable --all --clear-static-content > /dev/null
 
-            # php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
-            php -d memory_limit=2G bin/magento setup:upgrade --keep-generated
+            php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
 
           EOF
 
@@ -183,7 +180,7 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== Iniciando comando DI Compile ==="
 
-            php -d memory_limit=4G bin/magento setup:di:compile
+            php -d memory_limit=2G -d max_execution_time=3900 -d opcache.enable=1 -d opcache.memory_consumption=228 -d opcache.interned_strings_buffer=16 bin/magento setup:di:compile
 
           EOF
 
@@ -198,35 +195,34 @@ jobs:
             php bin/magento deploy:mode:show
           EOF
 
-      - name: Deploy completo de conteúdo estático (PARENT + CHILD explícito)
+      - name: Deploy completo de conteúdo estático e pausa de ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }} segundos para build de  estaticos
         id: deploy_statics_for_all
         if: steps.set_production_mode_before_static_deploy.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
-            echo "=== DEPLOY ADMINHTML ==="
-            php -d memory_limit=2G bin/magento setup:static-content:deploy \
-              --area adminhtml \
-              --theme Magento/backend \
-              --force \
-              --jobs 4
+            echo "=== DEPLOY PARA TODOS OS TEMAS ADMINHTML ==="
 
-            echo "=== DEPLOY FRONTEND - TEMA PRINCIPAL (petshop) ==="
-            php -d memory_limit=2G bin/magento setup:static-content:deploy \
-              --area frontend \
-              --theme BzoTech/petshop \
-              --force
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area adminhtml --theme Magento/backend --force --jobs 2  > /dev/null
 
-            echo "=== DEPLOY FRONTEND - TEMA CHILD (SOBREESCREVE) (petshop_child) ==="
-            php -d memory_limit=2G bin/magento setup:static-content:deploy \
-              --area frontend \
-              --theme BzoTech/petshop_child \
-              --force
+            echo "=== VERIFICAÇÃO DOS TEMAS COMPILADOS ==="
+            ls -la pub/static/adminhtml/ 2>/dev/null || echo "Nenhum tema admin encontrado"
 
-            echo "=== Temas frontend compilados ==="
-            ls -la pub/static/frontend/ 2>/dev/null || echo "Nenhum tema frontend encontrado"
+            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
+
+            echo "=== compilando child ==="
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop_child --force
+
+            echo "=== compilando parent ==="
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop --force
+
+            echo "Temas Frontend compilados:"
 
             sleep ${{ vars.SLEEP_UNTIL_BUILDING_STATIC_CONTENTS_ASSETS }}s
+
           EOF
 
       - name: Configurar modo produção e finalizar
@@ -267,8 +263,7 @@ jobs:
         if: steps.fixing_permissions_finished.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/last-version
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
             sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
-            echo "✅ Deploy concluído! Nova versão em produção."
+            echo "✅ Deploy concluído! Nova versão no ambiente."
           EOF
