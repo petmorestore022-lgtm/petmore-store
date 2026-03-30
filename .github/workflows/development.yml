@@ -233,13 +233,13 @@ jobs:
               --force \
               --jobs 4
 
-            echo "=== DEPLOY FRONTEND - TEMA PRINCIPAL ==="
+            echo "=== DEPLOY FRONTEND - TEMA PRINCIPAL (petshop) ==="
             php -d memory_limit=2G bin/magento setup:static-content:deploy \
               --area frontend \
               --theme BzoTech/petshop \
               --force
 
-            echo "=== DEPLOY FRONTEND - TEMA CHILD (SOBREESCREVE) ==="
+            echo "=== DEPLOY FRONTEND - TEMA CHILD (SOBREESCREVE) (petshop_child) ==="
             php -d memory_limit=2G bin/magento setup:static-content:deploy \
               --area frontend \
               --theme BzoTech/petshop_child \
