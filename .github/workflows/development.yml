@@ -213,7 +213,7 @@ jobs:
 
             echo "=== compilando parent ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --theme BzoTech/petshop --force
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
 
             echo "Temas Frontend compilados:"
 
