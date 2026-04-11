@@ -237,22 +237,6 @@ jobs:
 
           EOF
 
-      - name: Corrigir permissões finais
-        id: fixing_permissions_finished
-        if: steps.configure_production_module_and_finish.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            sudo find . -type f -exec chmod 644 {} \;
-            sudo find . -type d -exec chmod 755 {} \;
-
-            sudo chmod 600 app/etc/env.php
-            sudo chmod 600 app/etc/config.php
-
-            sudo chown -R www-data:www-data .
-          EOF
-
       - name: Movendo diretório para o path final
         id: moving_directories_to_final_path
         if: steps.fixing_permissions_finished.outcome == 'success'
@@ -261,6 +245,22 @@ jobs:
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
             sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
             echo "✅ Deploy concluído! Nova versão no desenvolvimento."
+          EOF
+
+      - name: Corrigir permissões finais
+        id: fixing_permissions_finished
+        if: steps.configure_production_module_and_finish.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
+
+            sudo find . -type f -exec chmod 644 {} \;
+            sudo find . -type d -exec chmod 755 {} \;
+
+            sudo chmod 600 app/etc/env.php
+            sudo chmod 600 app/etc/config.php
+
+            sudo chown -R www-data:www-data .
           EOF
 
       - name: Configurar modo produção e finalizar
