@@ -229,7 +229,6 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             php bin/magento indexer:reindex
-            php bin/magento cron:install --non-optional
             php bin/magento cache:clean
             php bin/magento cache:flush
 
@@ -262,4 +261,13 @@ jobs:
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
             sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
             echo "✅ Deploy concluído! Nova versão no desenvolvimento."
+          EOF
+
+      - name: Configurar modo produção e finalizar
+        id: configure_production_contrab
+        if: steps.configure_production_module_and_finish.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
+            php bin/magento cron:install --non-optional
           EOF
