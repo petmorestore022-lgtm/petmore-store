@@ -247,6 +247,15 @@ jobs:
             echo "✅ Deploy concluído! Nova versão no desenvolvimento."
           EOF
 
+      - name: Configurar modo produção e finalizar
+        id: configure_production_contrab
+        if: steps.configure_production_module_and_finish.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
+            php bin/magento cron:install --non-optional
+          EOF
+
       - name: Corrigir permissões finais
         id: fixing_permissions_finished
         if: steps.configure_production_module_and_finish.outcome == 'success'
@@ -261,13 +270,4 @@ jobs:
             sudo chmod 600 app/etc/config.php
 
             sudo chown -R www-data:www-data .
-          EOF
-
-      - name: Configurar modo produção e finalizar
-        id: configure_production_contrab
-        if: steps.configure_production_module_and_finish.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/current
-            php bin/magento cron:install --non-optional
           EOF
