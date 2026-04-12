@@ -32,7 +32,7 @@ jobs:
 
       - name: Run composer install if composer.json exists
         id: composer_install
-        if: steps.setup_php.outcome == 'success'
+        if: steps.check_files.outcome == 'success'
         run: |
           composer config -g http-basic.repo.magento.com \
           "${{ secrets.REPO_MAGENTO_PUBLIC_KEY }}" \
