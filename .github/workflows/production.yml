@@ -50,8 +50,7 @@ jobs:
         run: |
           ls -la auth.json
           export COMPOSER_AUTH="$(cat auth.json)"
-          composer validate --no-check-publish
-          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --no-interaction
+          composer update
       - name: Remove .git path
         id: remove_git_path
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
