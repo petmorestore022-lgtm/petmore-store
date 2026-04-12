@@ -34,6 +34,7 @@ jobs:
         id: config_auth_magento_composer
         if: steps.check_files.outcome == 'success'
         run: |
+          composer clear-cache
           composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
 
       - name: Run composer install if composer.json exists
