@@ -45,7 +45,7 @@ jobs:
 
       - name: Remove .git path
         id: remove_git_path
-        if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+        if: steps.composer_install.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
           rm -rf .git
           echo "Diretório .git removido com sucesso."
