@@ -243,13 +243,13 @@ jobs:
             echo "✅ Deploy concluído! Nova versão no desenvolvimento."
           EOF
 
-      - name: Configurar modo produção e finalizar
+      - name: Instalando crontab do Magento
         id: configure_production_contrab
         if: steps.moving_directories_to_final_path.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/current
-            php bin/magento cron:install --non-optional
+            php bin/magento cron:install --non-optional || true
           EOF
 
       - name: Corrigir permissões finais
