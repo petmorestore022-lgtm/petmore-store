@@ -30,27 +30,15 @@ jobs:
         with:
           files: 'composer.json'
 
-      # - name: Force Authentication File
-      #   id: config_auth_magento_composer
-      #   run: |
-
       - name: Run composer install if composer.json exists
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
-          cat <<EOF > auth.json
-          {
-            "http-basic": {
-              "repo.magento.com": {
-                "username": "${{ vars.MAGENTO_PUBLIC_KEY }}",
-                "password": "${{ vars.MAGENTO_PRIVATE_KEY }}"
-              }
-            }
-          }
-          EOF
-          ls -la auth.json
-          export COMPOSER_AUTH="$(cat auth.json)"
-          composer update
+          composer config -g http-basic.repo.magento.com \
+          "${{ secrets.MAGENTO_PUBLIC_KEY }}" \
+          "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+          composer validate --no-check-publish
+          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --no-interaction --no-plugins
       - name: Remove .git path
         id: remove_git_path
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
