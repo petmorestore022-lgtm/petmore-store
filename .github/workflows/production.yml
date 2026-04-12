@@ -35,8 +35,8 @@ jobs:
         if: steps.check_files.outcome == 'success'
         run: |
           composer config -g http-basic.repo.magento.com \
-          "${{ secrets.REPO_MAGENTO_PUBLIC_KEY }}" \
-          "${{ secrets.REPO_MAGENTO_PRIVATE_KEY }}"
+          "668e188347441807932bd6e998d62132" \
+          "dd5466b2b6542184715886c20ed4c601"
           composer validate --no-check-publish
           composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --no-interaction --no-plugins
       - name: Remove .git path
