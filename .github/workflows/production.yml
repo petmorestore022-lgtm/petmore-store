@@ -37,8 +37,8 @@ jobs:
           {
             "http-basic": {
               "repo.magento.com": {
-                "username": "${{ secrets.MAGENTO_PUBLIC_KEY }}",
-                "password": "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+                "username": "${{ vars.MAGENTO_PUBLIC_KEY }}",
+                "password": "${{ vars.MAGENTO_PRIVATE_KEY }}"
               }
             }
           }
