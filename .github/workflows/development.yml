@@ -59,7 +59,7 @@ jobs:
 
       - name: Testar conexão
         id: test_connection_ssh
-        if: steps.configure_ssh_on_server.outcome == 'success'
+        if: steps.configure_ssh_on_server.outcome == 'success' && steps.remove_git_path.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} "echo ✅ Conectado com sucesso"
 
