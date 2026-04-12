@@ -248,7 +248,7 @@ jobs:
 
       - name: Movendo diretório para o path final
         id: moving_directories_to_final_path
-        if: steps.fixing_permissions_finished.outcome == 'success'
+        if: steps.configure_production_module_and_finish.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
@@ -258,7 +258,7 @@ jobs:
 
       - name: Configurar modo produção e finalizar
         id: configure_production_contrab
-        if: steps.configure_production_module_and_finish.outcome == 'success'
+        if: steps.moving_directories_to_final_path.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/current
@@ -267,7 +267,7 @@ jobs:
 
       - name: Corrigir permissões finais
         id: fixing_permissions_finished
-        if: steps.configure_production_module_and_finish.outcome == 'success'
+        if: steps.configure_production_contrab.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/current
