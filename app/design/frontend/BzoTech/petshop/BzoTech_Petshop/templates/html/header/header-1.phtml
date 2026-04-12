@@ -4,19 +4,27 @@ $mediaSrc = $_configCore->getMediaUrl();
 <div class="header-desktop">
     <div class="header-top">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
+            <div class="row align-items-center d-flex justify-content-between">
+
+                <div class="col-auto">
                     <div class="hd-top-support">
                         <?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('header-contact-tracking')->toHtml(); ?>
                     </div>
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="header-services">
-                        <?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('header-top-services')->toHtml(); ?>
+                <div class="col-auto text-center mt-4 mb-4">
+                    <div class="logo-container">
+                        <?php echo $this->getChildHtml("logo"); ?>
                     </div>
                 </div>
+
+            <div class="col-auto text-end">
+                <div class="header-services">
+                    <?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('header-top-services')->toHtml(); ?>
+                </div>
             </div>
+
+        </div>
 
         </div>
     </div>
@@ -30,9 +38,7 @@ $mediaSrc = $_configCore->getMediaUrl();
                     </div>
                 </div>
 
-                <div class="logo-container">
-                    <?php echo $this->getChildHtml("logo"); ?>
-                </div>
+                
 
                 <div class="customer-wrapper">
                     <div class="r-content">

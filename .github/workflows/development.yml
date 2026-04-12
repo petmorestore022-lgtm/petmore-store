@@ -211,7 +211,9 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2  > /dev/null
+            echo "=== compilando parent ==="
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
 
             echo "Temas Frontend compilados:"
 
@@ -227,7 +229,6 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             php bin/magento indexer:reindex
-            php bin/magento cron:install --non-optional
             php bin/magento cache:clean
             php bin/magento cache:flush
 
@@ -236,12 +237,31 @@ jobs:
 
           EOF
 
+      - name: Movendo diretório para o path final
+        id: moving_directories_to_final_path
+        if: steps.fixing_permissions_finished.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+            echo "✅ Deploy concluído! Nova versão no desenvolvimento."
+          EOF
+
+      - name: Configurar modo produção e finalizar
+        id: configure_production_contrab
+        if: steps.configure_production_module_and_finish.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
+            php bin/magento cron:install --non-optional
+          EOF
+
       - name: Corrigir permissões finais
         id: fixing_permissions_finished
         if: steps.configure_production_module_and_finish.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
 
             sudo find . -type f -exec chmod 644 {} \;
             sudo find . -type d -exec chmod 755 {} \;
@@ -250,14 +270,4 @@ jobs:
             sudo chmod 600 app/etc/config.php
 
             sudo chown -R www-data:www-data .
-          EOF
-
-      - name: Movendo diretório para o path final
-        id: moving_directories_to_final_path
-        if: steps.fixing_permissions_finished.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
-            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
-            echo "✅ Deploy concluído! Nova versão no ambiente."
           EOF
