@@ -30,20 +30,26 @@ jobs:
         with:
           files: 'composer.json'
 
-      - name: Configurar autenticação Magento no Composer
-        id: config_auth_magento_composer
-        if: steps.check_files.outcome == 'success'
+      - name: Force Authentication File
         run: |
-          composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
-          composer config allow-plugins.magento/composer-dependency-version-audit-plugin false
-
+          echo '{
+            "http-basic": {
+              "repo.magento.com": {
+                "username": "${{ secrets.MAGENTO_PUBLIC_KEY }}",
+                "password": "${{ secrets.MAGENTO_PRIVATE_KEY }}"
+              }
+            }
+          }' > auth.json
+      - name: Debug Secret Presence
+        run: |
+          if [ -z "${{ secrets.MAGENTO_PUBLIC_KEY }}" ]; then echo "ERRO: Public Key vazia!"; else echo "Public Key OK"; fi
+          if [ -z "${{ secrets.MAGENTO_PRIVATE_KEY }}" ]; then echo "ERRO: Private Key vazia!"; else echo "Private Key OK"; fi
       - name: Run composer install if composer.json exists
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
           composer validate --no-check-publish
-          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --quiet
-
+          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --no-interaction
       - name: Remove .git path
         id: remove_git_path
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
