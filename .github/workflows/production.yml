@@ -32,7 +32,8 @@ jobs:
 
       - name: Force Authentication File
         id: config_auth_magento_composer
-        run: |
+        env:
+          COMPOSER_AUTH: |
            echo '{
             "http-basic": {
               "repo.magento.com": {
@@ -40,7 +41,7 @@ jobs:
                 "password": "${{ secrets.MAGENTO_PRIVATE_KEY }}"
               }
             }
-            }' > auth.json
+            }'
 
       - name: Run composer install if composer.json exists
         id: composer_install
