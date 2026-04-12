@@ -30,19 +30,15 @@ jobs:
         with:
           files: 'composer.json'
 
-      - name: Configurar autenticação Magento no Composer
-        id: config_auth_magento_composer
-        if: steps.check_files.outcome == 'success'
-        run: |
-          composer config -g http-basic.repo.magento.com "${{ secrets.MAGENTO_PUBLIC_KEY }}" "${{ secrets.MAGENTO_PRIVATE_KEY }}"
-
       - name: Run composer install if composer.json exists
         id: composer_install
-        if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
+        if: steps.check_files.outcome == 'success'
         run: |
+          composer config -g http-basic.repo.magento.com \
+          "${{ secrets.MAGENTO_PUBLIC_KEY }}" \
+          "${{ secrets.MAGENTO_PRIVATE_KEY }}"
           composer validate --no-check-publish
-          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --quiet
-
+          composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --no-interaction
       - name: Remove .git path
         id: remove_git_path
         if: steps.composer_install.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
@@ -211,7 +207,9 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== DEPLOY PARA TODOS OS TEMAS FRONTEND ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force --jobs 2  > /dev/null
+            echo "=== compilando parent ==="
+
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
 
             echo "Temas Frontend compilados:"
 
@@ -227,7 +225,6 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             php bin/magento indexer:reindex
-            php bin/magento cron:install --non-optional
             php bin/magento cache:clean
             php bin/magento cache:flush
 
@@ -236,12 +233,31 @@ jobs:
 
           EOF
 
-      - name: Corrigir permissões finais
-        id: fixing_permissions_finished
+      - name: Movendo diretório para o path final
+        id: moving_directories_to_final_path
         if: steps.configure_production_module_and_finish.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
+            sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
+            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
+            echo "✅ Deploy concluído! Nova versão no desenvolvimento."
+          EOF
+
+      - name: Instalando crontab do Magento
+        id: configure_production_contrab
+        if: steps.moving_directories_to_final_path.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
+            php bin/magento cron:install --non-optional || true
+          EOF
+
+      - name: Corrigir permissões finais
+        id: fixing_permissions_finished
+        if: steps.configure_production_contrab.outcome == 'success'
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            cd ${{ vars.APP_COMPLETE_PATH }}/current
 
             sudo find . -type f -exec chmod 644 {} \;
             sudo find . -type d -exec chmod 755 {} \;
@@ -250,14 +266,4 @@ jobs:
             sudo chmod 600 app/etc/config.php
 
             sudo chown -R www-data:www-data .
-          EOF
-
-      - name: Movendo diretório para o path final
-        id: moving_directories_to_final_path
-        if: steps.fixing_permissions_finished.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            [ -d "${{ vars.APP_COMPLETE_PATH }}/current" ] && sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
-            sudo mv ${{ vars.APP_COMPLETE_PATH }}/building ${{ vars.APP_COMPLETE_PATH }}/current
-            echo "✅ Deploy concluído! Nova versão no ambiente."
           EOF
