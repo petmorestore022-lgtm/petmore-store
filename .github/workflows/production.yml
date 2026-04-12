@@ -31,6 +31,7 @@ jobs:
           files: 'composer.json'
 
       - name: Force Authentication File
+        id: config_auth_magento_composer
         run: |
            echo '{
             "http-basic": {
@@ -40,14 +41,12 @@ jobs:
               }
             }
             }' > auth.json
-      - name: Debug Secret Presence
-        run: |
-          if [ -z "${{ secrets.MAGENTO_PUBLIC_KEY }}" ]; then echo "ERRO: Public Key vazia!"; else echo "Public Key OK"; fi
-          if [ -z "${{ secrets.MAGENTO_PRIVATE_KEY }}" ]; then echo "ERRO: Private Key vazia!"; else echo "Private Key OK"; fi
+
       - name: Run composer install if composer.json exists
         id: composer_install
         if: steps.config_auth_magento_composer.outcome == 'success' && steps.check_files.outputs.files_exists == 'true'
         run: |
+          export COMPOSER_AUTH="$(cat auth.json)"
           composer validate --no-check-publish
           composer install --prefer-dist --no-dev --optimize-autoloader --no-progress --no-interaction
       - name: Remove .git path
