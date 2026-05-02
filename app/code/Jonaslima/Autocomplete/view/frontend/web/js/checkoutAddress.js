@@ -10,7 +10,7 @@ require([
          * PLACEHOLDERS DOS CAMPOS
          */
 
-         const observer = new MutationObserver(function () {
+        const observer = new MutationObserver(function () {
 
             var street0 = document.querySelector("[name='street[0]']");
             var street1 = document.querySelector("[name='street[1]']");

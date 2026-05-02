@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- 
+<!--
 /**
 * Jonas Lima
 * https://github.com/LimaJonas
@@ -9,4 +9,5 @@
     <head>
         <link src="Jonaslima_Autocomplete::js/customerAddress.js" />
     </head>
+
 </page>
