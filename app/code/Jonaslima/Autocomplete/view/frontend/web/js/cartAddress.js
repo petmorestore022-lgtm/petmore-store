@@ -5,14 +5,10 @@ require([
     $(document).ready( function() {
         // Função ativada ao tirar o foco do input de CEP
 
-        // if (window.location.href.indexOf('multishipping/checkout_address/newShipping') !== -1) {
-            var postcode = $('[name="postcode"]').closest('div');
-            var street = $('[name="street[0]"]').closest('div');
+        var postcode = $('[name="postcode"]').closest('div');
+        var street = $('[name="street[0]"]').closest('div');
 
-            // if (postcode.length && street.length) {
-                postcode.insertBefore(street);
-            // }
-        // }
+        postcode.insertBefore(street);
 
         $(document).on("focusout",'input[name="postcode"]', function() {
 
