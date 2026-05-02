@@ -1,14 +1,24 @@
 require([
     'jquery',
     'jquery/ui',
-], function($){ 
-    $(document).ready( function() {   
-        // Função ativada ao tirar o foco do input de CEP     
+], function($){
+    $(document).ready( function() {
+        // Função ativada ao tirar o foco do input de CEP
+
+        // if (window.location.href.indexOf('multishipping/checkout_address/newShipping') !== -1) {
+            var postcode = $('[name="postcode"]').closest('div');
+            var street = $('[name="street[0]"]').closest('div');
+
+            // if (postcode.length && street.length) {
+                postcode.insertBefore(street);
+            // }
+        // }
+
         $(document).on("focusout",'input[name="postcode"]', function() {
 
             var cep = document.getElementsByName("postcode")[0].value;
             $.getJSON("https://brasilapi.com.br/api/cep/v1/"+ cep, function(data) {
-            
+
             // Substiruir variaveis conforme a API customizada indique
             var uf = data.state;
 
@@ -97,9 +107,9 @@ require([
                     break;
                 default:
                     document.getElementsByName('region_id')[0].getElementsByTagName('option')[0].selected = 'selected';
-                    break;                                                                        
+                    break;
             }
             });
         });
-    });            
+    });
 });

@@ -1,21 +1,61 @@
 require([
     'jquery',
     'jquery/ui',
-], function($){ 
+], function($){
     $(document).ready( function() {
+
+
+        var postcodeField = $('.field.zip');
+        var streetField = $('.field.street');
+
+        if (postcodeField.length && streetField.length) {
+            postcodeField.insertBefore(streetField);
+        }
+
+        const observer = new MutationObserver(function () {
+
+            var street0 = document.querySelector("[name='street[0]']");
+            var street1 = document.querySelector("[name='street[1]']");
+            var street2 = document.querySelector("[name='street[2]']");
+            var street3 = document.querySelector("[name='street[3]']");
+
+            if (street0) {
+                street0.placeholder = "Endereço";
+            }
+
+            if (street1) {
+                street1.placeholder = "Número";
+            }
+
+            if (street2) {
+                street2.placeholder = "Complemento";
+            }
+
+            if (street3) {
+                street3.placeholder = "Bairro";
+            }
+
+        });
+
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
         // Função ativada ao tirar o foco do input de CEP
         $(document).on("focusout",'input[name="postcode"]', function() {
 
             var cep = document.getElementsByName("postcode")[0].value;
             $.getJSON("https://brasilapi.com.br/api/cep/v1/"+ cep, function(data) {
-            
+
             // Substiruir variaveis conforme a API customizada indique
             var rua = data.street;
             var bairro = data.neighborhood;
             var cidade = data.city;
             var uf = data.state;
 
-            
+
             if(data.street != undefined){
                 var street1 = jQuery("#street_1");
                 street1.val(rua).trigger('keyup');
@@ -112,7 +152,7 @@ require([
                         break;
                     default:
                         document.getElementsByName('region_id')[0].getElementsByTagName('option')[0].selected = 'selected';
-                        break;                                                               
+                        break;
                 }
             }).fail(function() {
                 jQuery("#street_1").val("");
@@ -122,5 +162,5 @@ require([
                 jQuery("#city").val("");
             });
         });
-    });            
+    });
 });
