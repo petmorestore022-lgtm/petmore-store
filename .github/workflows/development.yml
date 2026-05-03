@@ -219,7 +219,7 @@ jobs:
 
       - name: Movendo diretório para o path final
         id: moving_directories_to_final_path
-        if: steps.configure_production_module_and_finish.outcome == 'success'
+        if: steps.deploy_statics_for_all.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             sudo rm -rf ${{ vars.APP_COMPLETE_PATH }}/current
