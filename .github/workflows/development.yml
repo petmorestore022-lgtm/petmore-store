@@ -217,22 +217,6 @@ jobs:
 
           EOF
 
-      - name: Configurar modo produção e finalizar
-        id: configure_production_module_and_finish
-        if: steps.deploy_statics_for_all.outcome == 'success'
-        run: |
-          ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
-            cd ${{ vars.APP_COMPLETE_PATH }}/building
-
-            php bin/magento indexer:reindex
-            php bin/magento cache:clean
-            php bin/magento cache:flush
-
-            echo "=== Modo final ==="
-            php bin/magento deploy:mode:show
-
-          EOF
-
       - name: Movendo diretório para o path final
         id: moving_directories_to_final_path
         if: steps.configure_production_module_and_finish.outcome == 'success'
@@ -243,13 +227,21 @@ jobs:
             echo "✅ Deploy concluído! Nova versão no desenvolvimento."
           EOF
 
-      - name: Instalando crontab do Magento
-        id: configure_production_contrab
+      - name: Preparando ambiente e atualizando ambiente
+        id: configure_production_and_refresh_temp_data
         if: steps.moving_directories_to_final_path.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/current
             php bin/magento cron:install --non-optional || true
+
+            php bin/magento indexer:reindex
+            php bin/magento cache:clean
+            php bin/magento cache:flush
+
+            echo "=== Modo final ==="
+            php bin/magento deploy:mode:show
+
           EOF
 
       - name: Corrigir permissões finais
