@@ -190,7 +190,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
             cd ${{ vars.APP_COMPLETE_PATH }}/building
             echo "=== Ativando modo PRODUCTION ==="
-            php bin/magento deploy:mode:set production --skip-compilation
+            php bin/magento deploy:mode:set developer --skip-compilation
             php bin/magento deploy:mode:show
           EOF
 
