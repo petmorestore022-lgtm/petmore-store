@@ -161,6 +161,8 @@ jobs:
         if: steps.configure_permission_for_vendors.outcome == 'success'
         run: |
           ssh -o StrictHostKeyChecking=no -o ConnectTimeout=300 -o ServerAliveInterval=100 ${{ secrets.MAGALU_USER }}@${{ secrets.MAGALU_HOST }} << 'EOF'
+            mkdir -p ${{ vars.APP_COMPLETE_PATH }}/building
+            
             cd ${{ vars.APP_COMPLETE_PATH }}/building
 
             rm -rf var/cache/* var/page_cache/* generated/* var/view_preprocessed/* pub/static/*
