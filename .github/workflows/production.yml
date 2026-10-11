@@ -170,8 +170,13 @@ jobs:
 
             bin/magento module:enable --all --clear-static-content > /dev/null
 
+            php -r '$file = "app/etc/config.php"; $conf = include $file; $conf["modules"]["Magento_OpenSearch"] = 0; $conf["modules"]["Magento_Elasticsearch"] = 0; $conf["modules"]["Magento_Elasticsearch8"] = 0; file_put_contents($file, "<?php\nreturn " . var_export($conf, true) . ";\n");' 
+            
             php -d memory_limit=2G bin/magento setup:upgrade
 
+            php -r '$file = "app/etc/config.php"; $conf = include $file; $conf["modules"]["Magento_OpenSearch"] = 1; $conf["modules"]["Magento_Elasticsearch"] = 1; $conf["modules"]["Magento_Elasticsearch8"] = 1; file_put_contents($file, "<?php\nreturn " . var_export($conf, true) . ";\n");'
+
+            bin/magento cache:flush
           EOF
 
       - name: Compilar dependências
