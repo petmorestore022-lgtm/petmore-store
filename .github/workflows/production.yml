@@ -167,9 +167,9 @@ jobs:
 
             rm -rf var/cache/* var/page_cache/* generated/* var/view_preprocessed/* pub/static/*
 
-            bin/magento module:enable --all --clear-static-content > /dev/null
+            bin/magento module:enable --all --clear-static-content
 
-            php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
+            php -d memory_limit=2G bin/magento setup:upgrade
 
           EOF
 
