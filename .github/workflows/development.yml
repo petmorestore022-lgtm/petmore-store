@@ -268,5 +268,5 @@ jobs:
             sudo chmod 600 app/etc/env.php
             sudo chmod 600 app/etc/config.php
 
-            sudo chown -R www-data:www-data .
+            sudo chown -R nginx:nginx .
           EOF
