@@ -25,6 +25,6 @@
 
     user: bruno_112_fake_admin
     pass: vZ0qbTR12WUQ
-    
 
-to access admin area
+
+to access admin area.
