@@ -170,8 +170,13 @@ jobs:
 
             bin/magento module:enable --all --clear-static-content > /dev/null
 
+            php -r '$file = "app/etc/config.php"; $conf = include $file; $conf["modules"]["Magento_OpenSearch"] = 0; $conf["modules"]["Magento_Elasticsearch"] = 0; $conf["modules"]["Magento_Elasticsearch8"] = 0; file_put_contents($file, "<?php\nreturn " . var_export($conf, true) . ";\n");' 
+
             php -d memory_limit=2G bin/magento setup:upgrade > /dev/null
 
+            php -r '$file = "app/etc/config.php"; $conf = include $file; $conf["modules"]["Magento_OpenSearch"] = 1; $conf["modules"]["Magento_Elasticsearch"] = 1; $conf["modules"]["Magento_Elasticsearch8"] = 1; file_put_contents($file, "<?php\nreturn " . var_export($conf, true) . ";\n");'
+
+            bin/magento cache:flush > /dev/null
           EOF
 
       - name: Compilar dependências
@@ -215,7 +220,7 @@ jobs:
 
             echo "=== compilando parent ==="
 
-            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force
+            php -d memory_limit=2G bin/magento setup:static-content:deploy --area frontend --force > /dev/null
 
             echo "Temas Frontend compilados:"
 
@@ -241,9 +246,9 @@ jobs:
             cd ${{ vars.APP_COMPLETE_PATH }}/current
             php bin/magento cron:install --non-optional || true
 
-            php bin/magento indexer:reindex
-            php bin/magento cache:clean
-            php bin/magento cache:flush
+            php bin/magento indexer:reindex > /dev/null
+            php bin/magento cache:clean > /dev/null
+            php bin/magento cache:flush > /dev/null
 
             echo "=== Modo final ==="
             php bin/magento deploy:mode:show
