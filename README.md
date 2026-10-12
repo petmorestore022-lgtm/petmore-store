@@ -27,4 +27,4 @@
     pass: vZ0qbTR12WUQ
 
 
-to access admin area...
+to access admin area.
